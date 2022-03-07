@@ -43,3 +43,43 @@ spec:
         securityContext:
           capabilities:
             add: ["NET_RAW", "NET_ADMIN"]
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: openshift-flask
+    app.kubernetes.io/component: openshift-flask
+    app.kubernetes.io/instance: openshift-flask
+  name: openshift-flask
+  namespace: test-helloworld
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      deployment: openshift-flask
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        deployment: openshift-flask
+    spec:
+      containers:
+      - image: quay.io/cchenlp/helloworld:1.0
+        imagePullPolicy: IfNotPresent
+        name: openshift-flask
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        resources: {}
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
