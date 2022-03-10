@@ -1,10 +1,12 @@
-# Install Dual-Stack Cluster using AI SaaS
+# Install ipv4 Only Cluster using AI SaaS
 
 ## Create Cluster
 
 ~~~bash
 
-$ aicli create cluster --paramfile files/dual-stack.yml mycluster
+$ aicli create cluster --paramfile files/ipv4.yml mycluster
+
+$ aicli update cluster -P api_vip=192.168.123.251 mycluster
 
 ~~~
 
@@ -46,25 +48,3 @@ $ aicli start cluster mycluster
 
 ~~~
 
-## Verification
-
-~~~bash
-
-$ oc describe network
-
-<Snip>
-
-Status:
-  Cluster Network:
-    Cidr:               10.128.0.0/14
-    Host Prefix:        23
-    Cidr:               fd01::/48
-    Host Prefix:        64
-  Cluster Network MTU:  1400
-  Network Type:         OVNKubernetes
-  Service Network:
-    172.30.0.0/16
-    fd02::/112
-Events:  <none>
-
-~~~
