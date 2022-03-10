@@ -1,10 +1,13 @@
-# Install ipv4 Only Cluster using AI SaaS
+# Install IPv4 Only Cluster using AI SaaS
 
 ## Create Cluster
 
 ~~~bash
 
 $ aicli create cluster --paramfile files/ipv4.yml mycluster
+
+# We can cannot specify api_vip when creating the cluster now but can only update the cluster later
+# Being addressed in https://github.com/openshift/assisted-service/pull/3258
 
 $ aicli update cluster -P api_vip=192.168.123.251 mycluster
 
@@ -47,4 +50,3 @@ done
 $ aicli start cluster mycluster
 
 ~~~
-
