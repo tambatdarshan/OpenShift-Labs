@@ -1,0 +1,57 @@
+apiVersion: kibana.k8s.elastic.co/v1
+kind: Kibana
+metadata:
+  name: kibana-sample
+  namespace: test-es
+spec:
+  count: 1
+  elasticsearchRef:
+    name: elasticsearch-sample
+  http:
+    service:
+      metadata:
+        annotations:
+          service.beta.openshift.io/serving-cert-secret-name: kibana-openshift-tls
+    tls:
+      certificate:
+        secretName: kibana-openshift-tls
+  podTemplate:
+    metadata:
+      creationTimestamp: null
+    spec:
+      containers:
+      - name: kibana
+        resources:
+          limits:
+            cpu: "1"
+            memory: 1Gi
+  version: 8.1.0
+
+---
+
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: kibana-sample
+  namespace: test-es
+spec:
+  host: kibana.apps.mycluster.nancyge.com
+  port:
+    targetPort: https
+  tls:
+    certificate: |
+      -----BEGIN CERTIFICATE-----
+      MIIFPzCCBCegAwIBAgISA++ruNe60Si6nHQ2R4wOd1ZQMA0GCSqGSIb3DQEBCwUA
+      -----END CERTIFICATE-----
+    insecureEdgeTerminationPolicy: Redirect
+    key: |
+      -----BEGIN PRIVATE KEY-----
+      MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC531N7JcGaoxc6
+      5PZdegf8i2rtz16VAExPhxo=
+      -----END PRIVATE KEY-----
+    termination: reencrypt
+  to:
+    kind: Service
+    name: kibana-sample-kb-http
+    weight: 100
+  wildcardPolicy: None

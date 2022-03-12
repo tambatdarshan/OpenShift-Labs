@@ -30,6 +30,18 @@ $ echo $PASSWORD
 
 ~~~
 
+## Use Trusted Certificate for Kibana
+
+By default Kibana uses its own CA to sign the certificate. So you have to trust the self-signed CA when login to the Kibana. Here we change the self-signed certificate to the cert which is signed by publicly trusted CA.
+
+~~~bash
+
+# Examine the files/elasticsearch/ECK_kibana_tls.yaml and replace the certificate and key with your publicly facing certificate and key
+
+$ oc apply -f files/elasticsearch/ECK_kibana_tls.yaml
+
+~~~
+
 ## Validation
 
 ~~~bash
