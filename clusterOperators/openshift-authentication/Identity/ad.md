@@ -342,23 +342,3 @@ Verify you have provided correct credentials.
 ~~~bash
 $ oc delete pods -l app=oauth-openshift
 ~~~
-
-
-  identityProviders:
-  - ldap:
-      attributes:
-        email:
-        - mail
-        id:
-        - uid
-        name:
-        - cn
-        preferredUsername:
-        - uid
-      bindDN: uid=ipa1,cn=users,cn=accounts,dc=mycluster,dc=nancyge,dc=com
-      bindPassword: "52Myself!"
-      insecure: false
-      url: ldaps://lb.apps.mycluster.nancyge.com:636/dc=mycluster,dc=nancyge,dc=com?uid
-    mappingMethod: claim
-    name: ldapidp
-    type: LDAP
