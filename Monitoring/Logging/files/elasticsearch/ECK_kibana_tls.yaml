@@ -39,16 +39,7 @@ spec:
   port:
     targetPort: https
   tls:
-    certificate: |
-      -----BEGIN CERTIFICATE-----
-      MIIFPzCCBCegAwIBAgISA++ruNe60Si6nHQ2R4wOd1ZQMA0GCSqGSIb3DQEBCwUA
-      -----END CERTIFICATE-----
     insecureEdgeTerminationPolicy: Redirect
-    key: |
-      -----BEGIN PRIVATE KEY-----
-      MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC531N7JcGaoxc6
-      5PZdegf8i2rtz16VAExPhxo=
-      -----END PRIVATE KEY-----
     termination: reencrypt
   to:
     kind: Service

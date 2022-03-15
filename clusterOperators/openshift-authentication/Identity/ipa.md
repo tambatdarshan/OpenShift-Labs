@@ -26,11 +26,11 @@ $ cat install.yaml
   - role: ipaserver
     state: present
 
+$ subscription-manager config --rhsm.manage_repos=1
 $ subscription-manager repos --enable ansible-2.8-for-rhel-8-x86_64-rpms
-$ yum install ansible
-$ yum install ansible-freeipa
+$ yum install ansible ansible-freeipa -y
 
-ansible-playbook -i inventory/hosts install.yaml
+$ ansible-playbook -i inventory/hosts install.yaml
 ~~~
 
 ## Configure OAuth
@@ -95,7 +95,7 @@ activeDirectory:
 groupUIDNameMapping:
     cn=ocp_support,cn=groups,cn=accounts,dc=mycluster,dc=nancyge,dc=com: ocp_support
     cn=ocp_admin,cn=groups,cn=accounts,dc=mycluster,dc=nancyge,dc=com: ocp_admin
-    cn=ocp_users,cn=groups,cn=accounts,dc=mycluster,dc=nancyge,dc=com: ocp_users    
+    cn=ocp_users,cn=groups,cn=accounts,dc=mycluster,dc=nancyge,dc=com: ocp_users
 
 EOF
 ~~~
@@ -151,4 +151,56 @@ spec:
     mappingMethod: claim
     name: ldapidp
     type: LDAP
+~~~
+
+## HAProxy + LDAPs
+
+1. fullchain.pem includes certificate and key, pem formatted
+2. mode needs to be tcp
+3. In backend, use either ca-file <IPA's CA file> or "verify none" to skip the CA check
+4. Point the DNS to haproxy server
+
+~~~bash
+
+$ cat /etc/haproxy/haproxy.cfg # in lb.apps.mycluster.nancyge.com
+
+frontend ldap-server-636
+    mode tcp
+    bind *:636 ssl crt /etc/ssl/certs/fullchain.pem
+    default_backend ldaps_servers
+
+backend ldaps_servers
+    mode tcp
+    option ldap-check
+    server ipa1 ipa1.mycluster.nancyge.com:636 check ssl verify none
+    server ipa2 ipa2.mycluster.nancyge.com:636 check ssl verify none backup
+
+frontend ldap-server-389
+    mode tcp
+    bind *:389
+    default_backend ldap_servers
+
+backend ldap_servers
+    mode tcp
+    option ldap-check
+    server ipa1 ipa1.mycluster.nancyge.com:389 check
+    server ipa2 ipa2.mycluster.nancyge.com:389 check backup
+
+$ cat /etc/hosts
+
+<public IP> lb.apps.mycluster.nancyge.com
+
+$ ldapsearch  -H ldaps://lb.apps.mycluster.nancyge.com:636  -b "cn=users,cn=accounts,dc=mycluster,dc=nancyge,dc=com" -D "uid=<binduser,cn=users,cn=accounts,dc=mycluster,dc=nancyge,dc=com" -w '<password>' uid
+# extended LDIF
+#
+# LDAPv3
+# base <cn=users,cn=accounts,dc=mycluster,dc=nancyge,dc=com> with scope subtree
+# filter: (objectclass=*)
+# requesting: uid
+#
+
+# users, accounts, mycluster.nancyge.com
+dn: cn=users,cn=accounts,dc=mycluster,dc=nancyge,dc=com
+<Snip>
+
 ~~~
