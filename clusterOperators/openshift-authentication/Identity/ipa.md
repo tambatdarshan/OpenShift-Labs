@@ -190,7 +190,7 @@ $ cat /etc/hosts
 
 <public IP> lb.apps.mycluster.nancyge.com
 
-$ ldapsearch  -H ldaps://lb.apps.mycluster.nancyge.com:636  -b "cn=users,cn=accounts,dc=mycluster,dc=nancyge,dc=com" -D "uid=<binduser,cn=users,cn=accounts,dc=mycluster,dc=nancyge,dc=com" -w '<password>' uid
+$ ldapsearch  -H ldaps://lb.apps.mycluster.nancyge.com:636  -b "cn=users,cn=accounts,dc=mycluster,dc=nancyge,dc=com" -D "uid=binduser,cn=users,cn=accounts,dc=mycluster,dc=nancyge,dc=com" -w '<password>' uid
 # extended LDIF
 #
 # LDAPv3
