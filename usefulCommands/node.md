@@ -41,3 +41,12 @@ https://github.com/SchSeba/dpdk-testpm-trex-example/blob/main/pods/dpdk/trex/tes
 $ oc label nodes worker03.ocp4.example.com env=nginx
 $ oc patch deployment/nginx  --patch '{"spec":{"template":{"spec":{"nodeSelector":{"env":"nginx"}}}}}'
 ~~~
+
+## Some Json tricks
+
+~~~bash
+
+$ oc get deployment console -o jsonpath='{.spec.template.spec.containers[0].image}'
+$ oc patch smcp/basic -p='{"spec":{"general":{"logging":{"componentLevels":{"ior":"debug"}}}}}'  --type=merge
+$ oc patch smcp basic --type json -p '[{"op": "remove", "path": "/spec/general/logging/componentLevels/ior"}]'
+~~~
