@@ -1,5 +1,8 @@
-#### Edit network operator
-~~~
+# SDN
+
+## Edit network operator
+
+~~~bash
 $ oc edit networks.operator.openshift.io cluster
 
 spec:
@@ -13,8 +16,10 @@ spec:
     rawCNIConfig: '{ "cniVersion": "0.3.1", "name": "test-network-1", "type": "ipvlan","master": "ens5", "mode": "l2", "ipam": { "type": "static", "addresses": [ { "address": "192.168.1.23/24" } ] } }'
     type: Raw
 ~~~
-#### Create pod yaml
-~~~
+
+## Create pod yaml
+
+~~~bash
 ---
 kind: Pod
 apiVersion: v1
@@ -51,8 +56,10 @@ spec:
       serviceAccount: ''
     status: {}
 ~~~
-#### Check the result
-~~~
+
+## Check the result
+
+~~~bash
 $ oc create -f hello-openshift-1.yaml
 $ oc describe pod hello-openshift-1
 
