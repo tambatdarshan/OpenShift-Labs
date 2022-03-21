@@ -11,3 +11,58 @@ do
 IPCFG="ip=10.72.94.24$i::10.72.94.254:255.255.255.0:::none nameserver=10.72.44.184"
 govc vm.change -vm worker-$i -e "guestinfo.afterburn.initrd.network-kargs=${IPCFG}"
 done
+
+oc patch smcp/basic -p='{"spec":{"general":{"logging":{"componentLevels":{"ior":"debug"}}}}}'  --type=merge
+oc patch smcp basic --type json -p '[{"op": "remove", "path": "/spec/general/logging/componentLevels/ior"}]'
+
+apiVersion: machine.openshift.io/v1beta1
+kind: MachineSet
+metadata:
+  creationTimestamp: null
+  labels:
+    machine.openshift.io/cluster-api-cluster: mycluster-qhlnt
+  name: mycluster-qhlnt-worker
+  namespace: openshift-machine-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      machine.openshift.io/cluster-api-cluster: mycluster-qhlnt
+      machine.openshift.io/cluster-api-machineset: mycluster-qhlnt-worker
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        machine.openshift.io/cluster-api-cluster: mycluster-qhlnt
+        machine.openshift.io/cluster-api-machine-role: worker
+        machine.openshift.io/cluster-api-machine-type: worker
+        machine.openshift.io/cluster-api-machineset: mycluster-qhlnt-worker
+    spec:
+      metadata:
+        creationTimestamp: null
+        labels:
+          node-role.kubernetes.io/worker: ""
+      providerSpec:
+        value:
+          apiVersion: vsphereprovider.openshift.io/v1beta1
+          credentialsSecret:
+            name: vsphere-cloud-credentials
+          diskGiB: 120
+          kind: VSphereMachineProviderSpec
+          memoryMiB: 8192
+          metadata:
+            creationTimestamp: null
+          network:
+            devices:
+            - networkName: "VM Network"
+          numCPUs: 4
+          numCoresPerSocket: 1
+          snapshot: ""
+          template: worker-0
+          userDataSecret:
+            name: worker-user-data
+          workspace:
+            datacenter: OpenShift
+            datastore: datastore1
+            folder: 4.7.33
+            server: vmware.rhts.gsslab.pek2.redhat.com
