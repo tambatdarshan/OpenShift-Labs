@@ -49,4 +49,28 @@ $ oc patch deployment/nginx  --patch '{"spec":{"template":{"spec":{"nodeSelector
 $ oc get deployment console -o jsonpath='{.spec.template.spec.containers[0].image}'
 $ oc patch smcp/basic -p='{"spec":{"general":{"logging":{"componentLevels":{"ior":"debug"}}}}}'  --type=merge
 $ oc patch smcp basic --type json -p '[{"op": "remove", "path": "/spec/general/logging/componentLevels/ior"}]'
+# openshift list all pods and thier specs (requests/limits)
+$ oc get pod -o jsonpath='{range .items[*]}{"SPEC:  \n  LIMITS  : "}{.spec.containers[*].resources.limits}{"\n  REQUESTS: "}{.spec.containers[*].resources.requests}{"\n"}{end}'
+# openshift list all pods and thier specs with name (requests /limits)
+$ oc get pod -o jsonpath='{range .items[*]}{"NAME:  "}{.metadata.name}{"\nSPEC:  \n  LIMITS  : "}{.spec.containers[*].resources.limits}{"\n  REQUESTS: "}{.spec.containers[*].resources.requests}{"\n\n"}{end}'
+# openshift list all nodes and thier corresponding os/kernel verion
+$ oc get nodes -o jsonpath='{range .items[*]}{"\t"}{.metadata.name}{"\t"}{.status.nodeInfo.osImage}{"\t"}{.status.nodeInfo.kernelVersion}{"\n"}{end}'
+# openshift patch build config with patch
+$ oc patch bc/kube-ops-view -p '{"spec":{"resources":{"limits":{"cpu":"1","memory":"1024Mi"},"requests":{"cpu":"100m","memory":"256Mi"}}}}'
+# openshift display the images used by Replication Controller
+$ oc get rc -n openshift-infra -o jsonpath='{range .items[*]}{"RC: "}{.metadata.name}{"\n Image:"}{.spec.template.spec.containers[*].image}{"\n"}{end}'
+# openshift display the requestor for namespace
+$ oc get namespace ui-test -o template --template '{{ index .metadata.annotations "openshift.io/requester"  }}'
+# openshift display all projects and its creator sorted by creator
+$ IFS=,; while read data1 data2; do printf "%-60s : %-50s\n" $data1 $data2;
+done < <( oc get projects -o template \
+--template '{{range .items}}{{.metadata.name}},{{index .metadata.annotations "openshift.io/requester"}}{{"\n"}}{{end }}' |
+sort -t, -k2 )
+# openshift fetch custom column name from metadata
+$ oc get rolebinding -o=custom-columns=USERS:.userNames,GROUPS:.groupNames
+
+
+for i in `oc get pv  -o=custom-columns=NAME:.metadata.name | grep pvc` ;
+   do oc describe pv $i | grep Path |awk '{print $2}';
+done
 ~~~
