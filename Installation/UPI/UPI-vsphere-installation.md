@@ -40,7 +40,7 @@ $ cat <<EOF > install/merge-bootstrap.ign
     "config": {
       "merge": [
         {
-          "source": "http://10.72.94.224/openshift/bootstrap.ign",
+          "source": "http://192.168.7.10/openshift/bootstrap.ign",
           "verification": {}
         }
       ]
@@ -60,6 +60,9 @@ $ base64 -w0 install/master.ign > install/master.64
 $ base64 -w0 install/worker.ign > install/worker.64
 $ base64 -w0 install/merge-bootstrap.ign > install/merge-bootstrap.64
 
+$ mkdir /var/www/html/openshift
+$ chmod 777 /var/www/html/openshift
+$ chmod 777 /var/www/html/openshift/bootstrap.ign
 $ cp install/bootstrap.ign /var/www/html/openshift/
 
 ~~~
@@ -84,7 +87,7 @@ $ export GOVC_INSECURE=true
 
 ~~~
 
-## Inject guestinfo to Nodes
+## Inject guestinfo to Nodes Static IPs
 
 ~~~bash
 
@@ -92,9 +95,14 @@ MASTER_IGN=`cat install/master.64`
 WORKER_IGN=`cat install/worker.64`
 BOOTSTRAP_IGN=`cat install/merge-bootstrap.64`
 
+~~~
+
+### Static IP
+
+~~~bash
+
 # Bootstrap
-#IPCFG="ip=10.72.94.248::10.72.94.254:255.255.255.0:::none nameserver=10.72.44.184"
-IPCFG="ip=10.72.94.248::10.72.94.254:255.255.255.0:::none nameserver=10.72.17.5"
+IPCFG="ip=10.72.94.248::10.72.94.254:255.255.255.0:::none nameserver=10.72.44.184"
 govc vm.change -vm bootstrap -e "guestinfo.afterburn.initrd.network-kargs=${IPCFG}"
 govc vm.change -vm bootstrap -e "guestinfo.ignition.config.data=${BOOTSTRAP_IGN}"
 govc vm.change -vm bootstrap -e "guestinfo.ignition.config.data.encoding=base64"
@@ -103,23 +111,48 @@ govc vm.change -vm bootstrap -e "disk.EnableUUID=TRUE"
 # Master
 $ for i in 0 1 2
 do
-#IPCFG="ip=10.72.94.23$i::10.72.94.254:255.255.255.0:::none nameserver=10.72.44.184"
-IPCFG="ip=10.72.94.23$i::10.72.94.254:255.255.255.0:::none nameserver=10.72.17.5"
-govc vm.change -vm master-$i -e "guestinfo.afterburn.initrd.network-kargs=${IPCFG}"
-govc vm.change -vm master-$i -e "guestinfo.ignition.config.data=${MASTER_IGN}"
-govc vm.change -vm master-$i -e "guestinfo.ignition.config.data.encoding=base64"
-govc vm.change -vm master-$i -e "disk.EnableUUID=TRUE"
+IPCFG="ip=10.72.94.23$i::10.72.94.254:255.255.255.0:::none nameserver=10.72.44.184"
+govc vm.change -vm master$i -e "guestinfo.afterburn.initrd.network-kargs=${IPCFG}"
+govc vm.change -vm master$i -e "guestinfo.ignition.config.data=${MASTER_IGN}"
+govc vm.change -vm master$i -e "guestinfo.ignition.config.data.encoding=base64"
+govc vm.change -vm master$i -e "disk.EnableUUID=TRUE"
 done
 
 # Worker
 $ for i in 0 1
 do
-#IPCFG="ip=10.72.94.24$i::10.72.94.254:255.255.255.0:::none nameserver=10.72.44.184"
-IPCFG="ip=10.72.94.23$i::10.72.94.254:255.255.255.0:::none nameserver=10.72.17.5"
-govc vm.change -vm worker-$i -e "guestinfo.afterburn.initrd.network-kargs=${IPCFG}"
-govc vm.change -vm worker-$i -e "guestinfo.ignition.config.data=${WORKER_IGN}"
-govc vm.change -vm worker-$i -e "guestinfo.ignition.config.data.encoding=base64"
-govc vm.change -vm worker-$i -e "disk.EnableUUID=TRUE"
+IPCFG="ip=10.72.94.24$i::10.72.94.254:255.255.255.0:::none nameserver=10.72.44.184"
+govc vm.change -vm worker$i -e "guestinfo.afterburn.initrd.network-kargs=${IPCFG}"
+govc vm.change -vm worker$i -e "guestinfo.ignition.config.data=${WORKER_IGN}"
+govc vm.change -vm worker$i -e "guestinfo.ignition.config.data.encoding=base64"
+govc vm.change -vm worker$i -e "disk.EnableUUID=TRUE"
+done
+
+~~~
+
+### DHCP
+
+~~~bash
+
+# Bootstrap
+govc vm.change -vm bootstrap -e "guestinfo.ignition.config.data=${BOOTSTRAP_IGN}"
+govc vm.change -vm bootstrap -e "guestinfo.ignition.config.data.encoding=base64"
+govc vm.change -vm bootstrap -e "disk.EnableUUID=TRUE"
+
+# Master
+$ for i in 0 1 2
+do
+govc vm.change -vm master$i -e "guestinfo.ignition.config.data=${MASTER_IGN}"
+govc vm.change -vm master$i -e "guestinfo.ignition.config.data.encoding=base64"
+govc vm.change -vm master$i -e "disk.EnableUUID=TRUE"
+done
+
+# Worker
+$ for i in 0 1
+do
+govc vm.change -vm worker$i -e "guestinfo.ignition.config.data=${WORKER_IGN}"
+govc vm.change -vm worker$i -e "guestinfo.ignition.config.data.encoding=base64"
+govc vm.change -vm worker$i -e "disk.EnableUUID=TRUE"
 done
 
 ~~~
