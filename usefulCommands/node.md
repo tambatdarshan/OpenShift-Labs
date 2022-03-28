@@ -74,3 +74,12 @@ for i in `oc get pv  -o=custom-columns=NAME:.metadata.name | grep pvc` ;
    do oc describe pv $i | grep Path |awk '{print $2}';
 done
 ~~~
+
+## Regenerate IGN files
+
+~~~bash
+
+$ oc extract -n openshift-machine-api secret/master-user-data --keys=userData --to=-
+$ oc extract -n openshift-machine-api secret/worker-user-data --keys=userData --to=-
+
+~~~
