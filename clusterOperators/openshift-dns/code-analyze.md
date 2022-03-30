@@ -2,6 +2,14 @@
 
 <https://github1s.com/openshift/cluster-dns-operator/blob/release-4.8/pkg/operator/controller/controller.go#L88-L89>
 
+## go-callvis
+
+~~~bash
+
+$ go-callvis -group type -focus github.com/openshift/cluster-dns-operator/pkg/operator/controller -limit github.com/openshift/cluster-dns-operator/pkg/operator/controller cmd/dns-operator/main.go
+
+~~~
+
 ## reconciler struct
 
 reconciler is a struct with only 3 items but 9 receivers. A receiver is a method inside the struct and the
