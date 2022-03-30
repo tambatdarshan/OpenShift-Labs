@@ -62,5 +62,4 @@ total 4968
 
 ## Update graphical lab
 
-https://access.redhat.com/labs/ocpupgradegraph/update_channel
-
+<https://access.redhat.com/labs/ocpupgradegraph/update_channel>
