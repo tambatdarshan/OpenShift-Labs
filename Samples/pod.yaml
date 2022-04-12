@@ -9,7 +9,10 @@ spec:
   - name: myapp-container
     image: registry.access.redhat.com/ubi7/ubi
     command: ['sh', '-c', 'echo The app is running! && sleep 3600']
+    volumeMounts:
+    - name: local-disks
+      mountPath: /data
   volumes:
-    - name: pv
+    - name: local-disks
       persistentVolumeClaim:
-        claimName: pv-7
+        claimName: local-pvc-name
