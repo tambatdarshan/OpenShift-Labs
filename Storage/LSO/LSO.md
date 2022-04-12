@@ -52,4 +52,22 @@ sh-4.4# ls -l /dev/disk/by-id/nvme-Amazon_Elastic_Block_Store_vol03b41e4841132a9
 lrwxrwxrwx. 1 root root 13 Apr 11 13:18 /dev/disk/by-id/nvme-Amazon_Elastic_Block_Store_vol03b41e4841132a96b -> ../../nvme1n1
 sh-4.4#
 
+# Even the PVC we specified is 50Gi, since the LocalVolume is 100Gi, the PVC is 100Gi
+
+$ oc get pvc
+NAME             STATUS   VOLUME              CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+local-pvc-name   Bound    local-pv-6abafcd5   100Gi      RWO            local-sc       16h
+sh-4.2# df -h
+Filesystem      Size  Used Avail Use% Mounted on
+overlay         120G   15G  105G  13% /
+tmpfs            64M     0   64M   0% /dev
+tmpfs            16G     0   16G   0% /sys/fs/cgroup
+shm              64M     0   64M   0% /dev/shm
+tmpfs            16G   61M   16G   1% /etc/hostname
+/dev/nvme1n1    100G  747M  100G   1% /data  # <==========
+/dev/nvme0n1p4  120G   15G  105G  13% /etc/hosts
+tmpfs            16G   20K   16G   1% /run/secrets/kubernetes.io/serviceaccount
+tmpfs            16G     0   16G   0% /proc/acpi
+tmpfs            16G     0   16G   0% /proc/scsi
+tmpfs            16G     0   16G   0% /sys/firmware
 ~~~
