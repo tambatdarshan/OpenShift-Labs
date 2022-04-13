@@ -1,5 +1,7 @@
 # How to commit PR
 
+<https://blog.csdn.net/qq_33429968/article/details/62219783>
+
 ## Fork the Repo to your own github and clone to local
 
 ## Add upstream
