@@ -40,7 +40,7 @@ $ cat <<EOF > install/merge-bootstrap.ign
     "config": {
       "merge": [
         {
-          "source": "http://192.168.7.10/openshift/bootstrap.ign",
+          "source": "http://10.72.94.224:81/openshift/bootstrap.ign",
           "verification": {}
         }
       ]
@@ -61,17 +61,11 @@ $ base64 -w0 install/worker.ign > install/worker.64
 $ base64 -w0 install/merge-bootstrap.ign > install/merge-bootstrap.64
 
 $ mkdir /var/www/html/openshift
+$ cp install/bootstrap.ign /var/www/html/openshift/
 $ chmod 777 /var/www/html/openshift
 $ chmod 777 /var/www/html/openshift/bootstrap.ign
-$ cp install/bootstrap.ign /var/www/html/openshift/
 
 ~~~
-
-## Create VM in VSphere
-
-1. Download ISO from <https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/>
-2. Deploy OVA File to a template
-3. Clone template to Virtual Machine - bootstrap, master-[0-2], worker-[0-1]
 
 ## Install govc Tool
 
@@ -82,9 +76,43 @@ $ curl -L -o - "https://github.com/vmware/govmomi/releases/latest/download/govc_
 $ export GOVC_URL=vmware.rhts.gsslab.pek2.redhat.com
 $ export GOVC_USERNAME=administrator@vsphere.local
 $ export GOVC_PASSWORD=<OpenShift>
-$ export GOVC_DATACENTER=OpenShift
+$ export GOVC_DATACENTER=Datacenter
 $ export GOVC_INSECURE=true
 
+~~~
+
+## Create VM in VSphere
+
+1. Download ISO from <https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/>
+2. Deploy OVA File to a template
+3. Clone template to Virtual Machine - bootstrap, master-[0-2], worker-[0-1]
+
+~~~bash
+$ Folder=4.7.33
+$ govc vm.clone -vm template-rhcos-4.7.33 -c=4 -m=8192 -folder=4.7.33 -host=vmware-host01.rhts.gsslab.pek2.redhat.com -on=false -ds=datastore1 bootstrap &
+$ for i in 0 1 2
+do
+govc vm.clone \
+-vm template-rhcos-4.7.33 \
+-c=8 -m=16384 \
+-folder=$Folder \
+-host=vmware-host0`expr $i + 1`.rhts.gsslab.pek2.redhat.com \
+-on=false \
+-ds=datastore`expr $i + 1` \
+master$i &
+done
+
+$ for i in 0 1
+do
+govc vm.clone \
+-vm template-rhcos-4.7.33 \
+-c=4 -m=8192 \
+-folder=$Folder \
+-host=vmware-host0`expr $i + 1`.rhts.gsslab.pek2.redhat.com \
+-on=false \
+-ds=datastore`expr $i + 2` \
+worker$i &
+done
 ~~~
 
 ## Inject guestinfo to Nodes Static IPs
@@ -115,6 +143,7 @@ IPCFG="ip=10.72.94.23$i::10.72.94.254:255.255.255.0:::none nameserver=10.72.44.1
 govc vm.change -vm master$i -e "guestinfo.afterburn.initrd.network-kargs=${IPCFG}"
 govc vm.change -vm master$i -e "guestinfo.ignition.config.data=${MASTER_IGN}"
 govc vm.change -vm master$i -e "guestinfo.ignition.config.data.encoding=base64"
+govc vm.change -vm master$i -e "guestinfo.hostname=master$i"
 govc vm.change -vm master$i -e "disk.EnableUUID=TRUE"
 done
 
@@ -125,6 +154,7 @@ IPCFG="ip=10.72.94.24$i::10.72.94.254:255.255.255.0:::none nameserver=10.72.44.1
 govc vm.change -vm worker$i -e "guestinfo.afterburn.initrd.network-kargs=${IPCFG}"
 govc vm.change -vm worker$i -e "guestinfo.ignition.config.data=${WORKER_IGN}"
 govc vm.change -vm worker$i -e "guestinfo.ignition.config.data.encoding=base64"
+govc vm.change -vm worker$i -e "guestinfo.hostname=worker$i"
 govc vm.change -vm worker$i -e "disk.EnableUUID=TRUE"
 done
 
@@ -152,7 +182,31 @@ $ for i in 0 1
 do
 govc vm.change -vm worker$i -e "guestinfo.ignition.config.data=${WORKER_IGN}"
 govc vm.change -vm worker$i -e "guestinfo.ignition.config.data.encoding=base64"
+govc vm.change -vm worker$i -e "guestinfo.hostname=worker$i"
 govc vm.change -vm worker$i -e "disk.EnableUUID=TRUE"
 done
 
+~~~
+
+## Start the Nodes
+
+~~~bash
+$ govc vm.power -on bootstrap master0 master1 master2
+~~~
+
+## Stop and Delete Nodes
+
+~~~bash
+govc vm.power -off bootstrap master0 master1 master2 worker0 worker1
+govc vm.destroy bootstrap
+
+for i in 0 1 2
+do
+govc vm.destroy master$i
+done
+
+for i in 0 1
+do
+govc vm.destroy worker$i
+done
 ~~~
