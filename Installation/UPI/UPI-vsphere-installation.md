@@ -89,11 +89,12 @@ $ export GOVC_INSECURE=true
 
 ~~~bash
 $ Folder=4.7.33
-$ govc vm.clone -vm template-rhcos-4.7.33 -c=4 -m=8192 -folder=4.7.33 -host=vmware-host01.rhts.gsslab.pek2.redhat.com -on=false -ds=datastore1 bootstrap &
+$ Template=template-rhcos-4.7.33
+$ govc vm.clone -vm $Template -c=4 -m=8192 -folder=$Folder -host=vmware-host01.rhts.gsslab.pek2.redhat.com -on=false -ds=datastore1 bootstrap &
 $ for i in 0 1 2
 do
 govc vm.clone \
--vm template-rhcos-4.7.33 \
+-vm $Template \
 -c=8 -m=16384 \
 -folder=$Folder \
 -host=vmware-host0`expr $i + 1`.rhts.gsslab.pek2.redhat.com \
@@ -105,7 +106,7 @@ done
 $ for i in 0 1
 do
 govc vm.clone \
--vm template-rhcos-4.7.33 \
+-vm $Template \
 -c=4 -m=8192 \
 -folder=$Folder \
 -host=vmware-host0`expr $i + 1`.rhts.gsslab.pek2.redhat.com \
