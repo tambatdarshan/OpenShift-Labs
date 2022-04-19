@@ -69,7 +69,7 @@ $ curl -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json"  -X
 
 ## Through aicli
 
-### Update infraenv
+### Update Infraenv
 
 ~~~bash
 
