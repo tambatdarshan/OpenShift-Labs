@@ -15,7 +15,7 @@ platform:
     vcenter: vmware.rhts.gsslab.pek2.redhat.com
     username: administrator@vsphere.local
     password: <password>
-    datacenter: OpenShift
+    datacenter: Datacenter
     defaultDatastore: datastore1
     folder: "/OpenShift/vm/4.10.5/"
 fips: false
