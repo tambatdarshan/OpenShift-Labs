@@ -21,7 +21,7 @@ IMAGE=rhcos-410.84-live.iso
 arg1="console=ttyS0"
 arg2="console=ttyS0,115200n8"
 arg3="coreos.autologin=ttyS0"
-arg4="ip=192.168.123.133::192.168.123.1:255.255.255.0:::none nameserver=192.168.123.1"
+arg4="ip=192.168.124.133::192.168.124.1:255.255.255.0:::none nameserver=192.168.124.1"
 alias coreos-installer='podman run --privileged --rm -v /dev:/dev -v /run/udev:/run/udev -v $PWD:/data -w /data quay.io/coreos/coreos-installer:release'
 coreos-installer iso customize $IMAGE --dest-karg-append="$arg1" --dest-karg-append="$arg2" --dest-karg-append="$arg3" --dest-karg-append="$arg4" --live-karg-append="$arg1" --live-karg-append="$arg2" --live-karg-append="$arg3" --live-karg-append="$arg4"
 coreos-installer iso ignition embed -fi iso.ign rhcos-410.84-live.iso
@@ -31,6 +31,7 @@ coreos-installer iso ignition embed -fi iso.ign rhcos-410.84-live.iso
 
 ~~~bash
 
+$ IMAGE=/home/sno/images/rhcos-410.84-live.iso
 $ virt-install -n ocp-sno \
 --memory 32768 \
 --os-variant=fedora-coreos-stable \
