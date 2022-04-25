@@ -22,6 +22,9 @@ spec:
                 operator: In
                 values:
                 - ""
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        operator: Exists
     spec:
       containers:
       - name: cchen-test
