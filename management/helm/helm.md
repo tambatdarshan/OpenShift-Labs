@@ -41,9 +41,9 @@ total 8
 ~~~bash
 $ helm install test-mychart ./mychart
 $ helm list
-NAME         	NAMESPACE	REVISION	UPDATED                             	STATUS  	CHART         	APP VERSION
-clunky-serval	default  	1       	2022-04-27 21:42:59.812526 +0800 CST	deployed	mycharts-0.1.0	1.16.0
-test-mychart 	default  	1       	2022-04-27 22:39:24.368863 +0800 CST	deployed	mychart-0.1.0 	1.16.0
+NAME          NAMESPACE REVISION UPDATED                              STATUS   CHART          APP VERSION
+clunky-serval default   1        2022-04-27 21:42:59.812526 +0800 CST deployed mycharts-0.1.0 1.16.0
+test-mychart  default   1        2022-04-27 22:39:24.368863 +0800 CST deployed mychart-0.1.0  1.16.0
 
 $ oc get pods
 NAME                                      READY   STATUS    RESTARTS   AGE
