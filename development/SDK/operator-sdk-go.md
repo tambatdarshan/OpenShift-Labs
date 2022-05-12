@@ -2,17 +2,17 @@
 
 <https://docs.openshift.com/container-platform/4.8/operators/operator_sdk/golang/osdk-golang-tutorial.html>
 
-## Install Packages, Download Operator-sdk and opm Package
+## Download operator-sdk and opm Package and Install Necessary Build Tools
 
 ~~~bash
-# I'm using OCP 4.8.24 so make sure you are using golang 1.16
+# I'm using OCP 4.8.24 so make sure you are using golang 1.16. For 4.9 make sure you are using golang 1.17 and so on
 # Extract the operator-sdk and opm tar.gz file and copy the binary to /usr/local/bin and add x permission
 $ wget https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/operator-sdk/4.8.25/operator-sdk-v1.8.2-ocp-darwin-x86_64.tar.gz
 $ wget https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/4.8.24/opm-mac-4.8.24.tar.gz
 $ yum install gcc make -y
 ~~~
 
-## Initial the Operator and Create API
+## Initialize the Operator and Create API
 
 ~~~bash
 $ mkdir memcached-operator
@@ -65,7 +65,7 @@ $ make docker-build
 $ make docker-push
 ~~~
 
-## Build the Bundle
+## Build the Bundle and Push to quay.io
 
 ~~~bash
 $ make bundle
@@ -73,14 +73,14 @@ $ make bundle-build
 $ make bundle-push
 ~~~
 
-## Build the CatalogSource
+## Build the CatalogSource and Push to quay.io
 
 ~~~bash
 $ make catalog-build
 $ make catalog-push
 ~~~
 
-## Install the CatalogSource
+## Install the CatalogSource and Push to quay.io
 
 ~~~bash
 $ oc apply -f <path>/files/catalogsource.yaml
