@@ -58,14 +58,14 @@ IMAGE_TAG_BASE ?= quay.io/rhn_support_cchen/memcached-operator
 IMG ?= $(IMAGE_TAG_BASE):latest
 ~~~
 
-## Build the Operator
+## Build the Operator and Push Operator Image to quay.io
 
 ~~~bash
 $ make docker-build
 $ make docker-push
 ~~~
 
-## Build the Bundle and Push to quay.io
+## Build the Bundle and Push Bundle Image to quay.io
 
 ~~~bash
 $ make bundle
@@ -73,7 +73,7 @@ $ make bundle-build
 $ make bundle-push
 ~~~
 
-## Build the CatalogSource and Push to quay.io
+## Build the CatalogSource and Push Index Image to quay.io
 
 ~~~bash
 $ make catalog-build
