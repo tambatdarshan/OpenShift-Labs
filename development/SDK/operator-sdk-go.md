@@ -1,6 +1,8 @@
 # Operator SDK for GoLang
 
-## Install packages and download operator-sdk and opm
+## Install packages and download operator-sdk and opm packages
+
+<https://docs.openshift.com/container-platform/4.8/operators/operator_sdk/golang/osdk-golang-tutorial.html>
 
 ~~~bash
 # I'm using OCP 4.8 so make sure you are using golang 1.16
@@ -42,7 +44,7 @@ $ make manifests
 ## Copy files/memacached_controller.go.sample to controllers/memcached_controller.go
 
 ~~~bash
-$ cp $_PATH/files/memcached_controller.go.sample controllers/memcached_controller.go
+$ cp <path>/files/memcached_controller.go.sample controllers/memcached_controller.go
 $ make manifests
 ~~~
 
@@ -81,7 +83,7 @@ $ make catalog-push
 
 ~~~bash
 
-$ oc apply -f files/catalogsource.yaml
+$ oc apply -f <path>/files/catalogsource.yaml
 
 ~~~
 
