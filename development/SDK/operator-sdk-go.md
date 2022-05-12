@@ -1,15 +1,18 @@
 # Operator SDK for GoLang
 
-## Install packages and download operator-sdk and opm packages
-
 <https://docs.openshift.com/container-platform/4.8/operators/operator_sdk/golang/osdk-golang-tutorial.html>
 
+## Install Packages, Download Operator-sdk and opm Package
+
 ~~~bash
-# I'm using OCP 4.8 so make sure you are using golang 1.16
-$ yum install gcc make
+# I'm using OCP 4.8.24 so make sure you are using golang 1.16
+# Extract the operator-sdk and opm tar.gz file and copy the binary to /usr/local/bin and add x permission
+$ wget https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/operator-sdk/4.8.25/operator-sdk-v1.8.2-ocp-darwin-x86_64.tar.gz
+$ wget https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/4.8.24/opm-mac-4.8.24.tar.gz
+$ yum install gcc make -y
 ~~~
 
-## Initial the operator and create API
+## Initial the Operator and Create API
 
 ~~~bash
 $ mkdir memcached-operator
@@ -18,7 +21,7 @@ $ operator-sdk init --domain=cchen666.github.io --repo=github.com/cchen666/memca
 $ operator-sdk create api --group=cache --version=v1alpha1 --kind=Memcached
 ~~~
 
-## Change the code api/v1alpha1/memcached_types.go
+## Implement Spec and Status to api/v1alpha1/memcached_types.go
 
 ~~~go
 type MemcachedSpec struct {
@@ -31,40 +34,38 @@ type MemcachedStatus struct {
     // Nodes are the names of the memcached pods
     Nodes []string `json:"nodes"`
 }
-
 ~~~
 
-## Generate and Manifests
+## Update Generated Code and Create Manifests
 
 ~~~bash
 $ make generate
 $ make manifests
 ~~~
 
-## Copy files/memacached_controller.go.sample to controllers/memcached_controller.go
+## Implement controllers/memcached_controller.go
 
 ~~~bash
+# You can directly use files/memcached_controller.go.sample
 $ cp <path>/files/memcached_controller.go.sample controllers/memcached_controller.go
 $ make manifests
 ~~~
 
-## Change the Makefile
+## Change the Makefile to Your Own Registry Info
 
 ~~~makefile
 IMAGE_TAG_BASE ?= quay.io/rhn_support_cchen/memcached-operator
 IMG ?= $(IMAGE_TAG_BASE):latest
 ~~~
 
-## Build the operator
+## Build the Operator
 
 ~~~bash
-
 $ make docker-build
 $ make docker-push
-
 ~~~
 
-## Build the bundle
+## Build the Bundle
 
 ~~~bash
 $ make bundle
@@ -82,12 +83,10 @@ $ make catalog-push
 ## Install the CatalogSource
 
 ~~~bash
-
 $ oc apply -f <path>/files/catalogsource.yaml
-
 ~~~
 
-## Check in the webUI
+## Install the Operator in WebUI OperatorHub
 
 ~~~bash
 # You see your own Operator and the Operator could be installed
