@@ -26,6 +26,7 @@ $ git checkout -b cchen-dev
 ## Commit and Push
 
 ~~~bash
+$ git add <changed file>
 $ git commit -m "Only split the first = when overriding extra_args"
 $ git push origin cchen-dev
 Enumerating objects: 7, done.
