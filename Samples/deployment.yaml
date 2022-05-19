@@ -15,8 +15,8 @@ spec:
     spec:
       containers:
       - name: hello-openshift
-        image: registry.access.redhat.com/ubi7/ubi
-        command: ['sh', '-c', 'echo The app is running! && sleep 3600']
+        image: registry.access.redhat.com/ubi8/ubi
+        command: ['sh', '-c', 'echo The app is running! && sleep 3600000']
 
 ---
 
