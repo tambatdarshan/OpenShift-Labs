@@ -13,7 +13,7 @@ spec:
       labels:
         app: ubi # has to match .spec.selector.matchLabels
     spec:
-      terminationGracePeriodSeconds: 10
+      terminationGracePeriodSeconds: 1000
       containers:
       - name: ubi
         image: registry.redhat.io/ubi7/ubi
