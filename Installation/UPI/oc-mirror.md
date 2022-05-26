@@ -1,11 +1,12 @@
 # oc-mirror
 
 ## Installation
+
 <https://github.com/openshift/oc-mirror>
 
 ~~~bash
-$ git clone
-$ cd
+$ git clone https://github.com/openshift/oc-mirror.git
+$ cd oc-mirror
 $ make build
 ~~~
 
