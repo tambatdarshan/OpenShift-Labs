@@ -8,6 +8,10 @@
 $ git clone https://github.com/openshift/oc-mirror.git
 $ cd oc-mirror
 $ make build
+
+# Or
+
+$ wget https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/4.10.13/oc-mirror.tar.gz
 ~~~
 
 ## List Channels
@@ -19,5 +23,9 @@ $ for i in odf-operator mcg-operator odf-csi-addons-operator; do ./bin/oc-mirror
 ## Sync the Image
 
 ~~~bash
-$ ./bin/oc-mirror --config /tmp/imageset.yaml docker://bastion.ocp4.example.com:5000/oc-mirror
+$ mkdir ~/.docker
+$ podman login <Your Registry>
+$ podman login registry.redhat.io
+$ cp /run/containers/0/auth.json ~/.docker/config.json
+$ ./bin/oc-mirror --config /tmp/imageset.yaml docker://$REGISTRY_HOST:5000/oc-mirror
 ~~~

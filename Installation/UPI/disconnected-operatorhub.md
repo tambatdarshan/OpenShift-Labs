@@ -5,26 +5,26 @@ Internet <------> Workstation <------> Registry <------> OCP Cluster
 ## Set environment variables
 
 ~~~bash
-# WORKSTATION_HOST=workstation.mycluster.nancyge.com
-# WORKSTATION_IP=10.0.81.187
-# REGISTRY_HOST=registry.mycluster.nancyge.com
-# REGISTRY_IP=registry.mycluster.nancyge.com (It can be resolved by DNS)
-# NAMESPACE=olm-mirror
+$ export WORKSTATION_HOST=workstation.mycluster.nancyge.com
+$ export WORKSTATION_IP=10.0.81.187
+$ export REGISTRY_HOST=registry.mycluster.nancyge.com # It can be resolved by DNS
+$ export REGISTRY_IP=<IP address>
+$ export NAMESPACE=olm-mirror
 ~~~
 
 ## Create Registry CA and Certificate
 
 ~~~bash
-# yum install -y podman httpd-tools
+$ yum install -y podman httpd-tools
 
-# mkdir -p /opt/registry/{auth,certs,data}
-# mkdir -p /etc/crts/ && cd /etc/crts/
+$ mkdir -p /opt/registry/{auth,certs,data}
+$ mkdir -p /etc/crts/ && cd /etc/crts/
 
-# htpasswd -bBc /opt/registry/auth/htpasswd cchen redhat
+$ htpasswd -bBc /opt/registry/auth/htpasswd cchen redhat
 
-# openssl genrsa -out /etc/crts/cert.ca.key 4096
+$ openssl genrsa -out /etc/crts/cert.ca.key 4096
 
-# openssl req -x509 \
+$ openssl req -x509 \
   -new -nodes \
   -key /etc/crts/cert.ca.key \
   -sha256 \
@@ -36,9 +36,9 @@ Internet <------> Workstation <------> Registry <------> OCP Cluster
   -config <(cat /etc/pki/tls/openssl.cnf \
       <(printf '[SAN]\nbasicConstraints=critical, CA:TRUE\nkeyUsage=keyCertSign, cRLSign, digitalSignature'))
 
-# openssl genrsa -out /etc/crts/cert.key 2048
+$ openssl genrsa -out /etc/crts/cert.key 2048
 
-# openssl req -new -sha256 \
+$ openssl req -new -sha256 \
     -key /etc/crts/cert.key \
     -subj "/O=Local Cert/CN=$REGISTRY_HOST" \
     -reqexts SAN \
@@ -46,7 +46,7 @@ Internet <------> Workstation <------> Registry <------> OCP Cluster
         <(printf "\n[SAN]\nsubjectAltName=DNS:$REGISTRY_HOST,IP:$REGISTRY_IP\nbasicConstraints=critical, CA:FALSE\nkeyUsage=digitalSignature, keyEncipherment, keyAgreement, dataEncipherment\nextendedKeyUsage=serverAuth")) \
     -out /etc/crts/cert.csr
 
-# openssl x509 \
+$ openssl x509 \
     -req \
     -sha256 \
     -extfile <(printf "subjectAltName=DNS:$REGISTRY_HOST,IP:$REGISTRY_IP\nbasicConstraints=critical, CA:FALSE\nkeyUsage=digitalSignature, keyEncipherment, keyAgreement, dataEncipherment\nextendedKeyUsage=serverAuth") \
@@ -56,31 +56,41 @@ Internet <------> Workstation <------> Registry <------> OCP Cluster
     -CAkey /etc/crts/cert.ca.key \
     -CAcreateserial -out /etc/crts/cert.crt
 
-# openssl x509 -in /etc/crts/cert.crt -text
+$ openssl x509 -in /etc/crts/cert.crt -text
 
-# cp /etc/crts/cert.key  /opt/registry/certs/ocp4.example.com.key
-# cp /etc/crts/cert.crt  /opt/registry/certs/ocp4.example.com.crt
+$ cp /etc/crts/cert.key  /opt/registry/certs/$REGISTRY_HOST.key
+$ cp /etc/crts/cert.crt  /opt/registry/certs/$REGISTRY_HOST.crt
 
-# cp /opt/registry/certs/ocp4.example.com.crt /etc/pki/ca-trust/source/anchors/
+$ cp /etc/crts/cert.ca.crt /etc/pki/ca-trust/source/anchors/
 
-# update-ca-trust
+$ update-ca-trust extract
 ~~~
 
 ## Run the Registry container
 
 ~~~bash
-# podman run --name mirror-registry -p 5000:5000 -v /opt/registry/data:/var/lib/registry:z -v /opt/registry/auth:/auth:z -e "REGISTRY_AUTH=htpasswd" -e "REGISTRY_AUTH_HTPASSWD_REALM=Registry Realm" -e REGISTRY_AUTH_HTPASSWD_PATH=/auth/htpasswd -v /opt/registry/certs:/certs:z -e REGISTRY_HTTP_TLS_CERTIFICATE=/certs/registry.mycluster.nancyge.com.crt -e REGISTRY_HTTP_TLS_KEY=/certs/registry.mycluster.nancyge.com_key.key -d docker.io/library/registry:2
+$ podman run --name mirror-registry \
+-p 5000:5000 \
+-v /opt/registry/data:/var/lib/registry:z \
+-v /opt/registry/auth:/auth:z \
+-e "REGISTRY_AUTH=htpasswd" \
+-e "REGISTRY_AUTH_HTPASSWD_REALM=Registry Realm" \
+-e REGISTRY_AUTH_HTPASSWD_PATH=/auth/htpasswd \
+-v /opt/registry/certs:/certs:z \
+-e REGISTRY_HTTP_TLS_CERTIFICATE=/certs/$REGISTRY_HOST.crt \
+-e REGISTRY_HTTP_TLS_KEY=/certs/$REGISTRY_HOST.key \
+-d docker.io/library/registry:2
 ~~~
 
 ## Trust the CA in your workstation
 
 ~~~bash
-# scp /etc/crts/cert.ca.crt $WORKSTATION_IP:/etc/pki/ca-trust/source/anchors/
+$ scp /etc/crts/cert.ca.crt $WORKSTATION_IP:/etc/pki/ca-trust/source/anchors/
 
 <Do this in your Workstation>
 
-# update-ca-trust extract
-$ podman login $REGISTRY_IP:5000
+$ update-ca-trust extract
+$ podman login $REGISTRY_HOST:5000
 ~~~
 
 ## Disabling the default OperatorHub sources
@@ -94,7 +104,7 @@ $ oc patch OperatorHub cluster --type json \
 
 ~~~bash
 $ podman login registry.redhat.io
-$ podman login $REGISTRY_IP:5000
+$ podman login $REGISTRY_HOST:5000
 
 ## In order to get the whole operator list, we start redhat-operator-index
 $ podman run -p50051:50051 \
@@ -146,7 +156,7 @@ wrote mirroring manifests to manifests-redhat-operator-index-1622107696
 <https://docs.openshift.com/container-platform/4.7/cicd/builds/setting-up-trusted-ca.html>
 
 ~~~bash
-$ oc create configmap registry-ca -n openshift-config --from-file=registry.mycluster.nancyge.com..5000=/etc/pki/ca-trust/source/anchors/cert.ca.crt
+$ oc create configmap registry-ca -n openshift-config --from-file=$REGISTRY_HOST..5000=/etc/pki/ca-trust/source/anchors/cert.ca.crt
 
 $ oc patch image.config.openshift.io/cluster --patch '{"spec":{"additionalTrustedCA":{"name":"registry-ca"}}}' --type=merge
 ~~~
