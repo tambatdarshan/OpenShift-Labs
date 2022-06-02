@@ -8,7 +8,6 @@ Internet <------> Workstation <------> Registry <------> OCP Cluster
 $ export WORKSTATION_HOST=workstation.mycluster.nancyge.com
 $ export WORKSTATION_IP=10.0.81.187
 $ export REGISTRY_HOST=registry.mycluster.nancyge.com # It can be resolved by DNS
-$ export REGISTRY_IP=<IP address>
 $ export NAMESPACE=olm-mirror
 ~~~
 
@@ -43,13 +42,13 @@ $ openssl req -new -sha256 \
     -subj "/O=Local Cert/CN=$REGISTRY_HOST" \
     -reqexts SAN \
     -config <(cat /etc/pki/tls/openssl.cnf \
-        <(printf "\n[SAN]\nsubjectAltName=DNS:$REGISTRY_HOST,IP:$REGISTRY_IP\nbasicConstraints=critical, CA:FALSE\nkeyUsage=digitalSignature, keyEncipherment, keyAgreement, dataEncipherment\nextendedKeyUsage=serverAuth")) \
+        <(printf "\n[SAN]\nsubjectAltName=DNS:$REGISTRY_HOST\nbasicConstraints=critical, CA:FALSE\nkeyUsage=digitalSignature, keyEncipherment, keyAgreement, dataEncipherment\nextendedKeyUsage=serverAuth")) \
     -out /etc/crts/cert.csr
 
 $ openssl x509 \
     -req \
     -sha256 \
-    -extfile <(printf "subjectAltName=DNS:$REGISTRY_HOST,IP:$REGISTRY_IP\nbasicConstraints=critical, CA:FALSE\nkeyUsage=digitalSignature, keyEncipherment, keyAgreement, dataEncipherment\nextendedKeyUsage=serverAuth") \
+    -extfile <(printf "subjectAltName=DNS:$REGISTRY_HOST\nbasicConstraints=critical, CA:FALSE\nkeyUsage=digitalSignature, keyEncipherment, keyAgreement, dataEncipherment\nextendedKeyUsage=serverAuth") \
     -days 3650 \
     -in /etc/crts/cert.csr \
     -CA /etc/crts/cert.ca.crt \
@@ -117,14 +116,14 @@ $ grpcurl -plaintext localhost:50051 api.Registry/ListPackages > packages.out
 $ opm index prune \
     -f registry.redhat.io/redhat/redhat-operator-index:v4.7 \
     -p advanced-cluster-management,jaeger-product,quay-operator,cluster-logging,elasticsearch-operator,serverless-operator \
-    -t $REGISTRY_IP:5000/$NAMESPACE/redhat-operator-index:v4.7
+    -t $REGISTRY_HOST:5000/$NAMESPACE/redhat-operator-index:v4.7
 
 -f: index to prune
 -p: the included operators
 -t: Custom tag for new index image being built
 
 ## Then push the new index image to Registry
-$ podman push $REGISTRY_IP:5000/$NAMESPACE/redhat-operator-index:v4.7
+$ podman push $REGISTRY_HOST:5000/$NAMESPACE/redhat-operator-index:v4.7
 ~~~
 
 ## Mirroring an Operator catalog
@@ -137,10 +136,10 @@ $ REG_CREDS=${XDG_RUNTIME_DIR}/containers/auth.json
 ~~~bash
 Then run mirror command
 
-$ podman login $REGISTRY_IP:5000
+$ podman login $REGISTRY_HOST:5000
 $ oc adm catalog mirror \
-    $REGISTRY_IP:5000/$NAMESPACE/redhat-operator-index:v4.7 \
-    $REGISTRY_IP:5000/$NAMESPACE \
+    $REGISTRY_HOST:5000/$NAMESPACE/redhat-operator-index:v4.7 \
+    $REGISTRY_HOST:5000/$NAMESPACE \
     -a ${REG_CREDS} \
     --insecure
 
