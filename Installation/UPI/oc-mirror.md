@@ -8,10 +8,6 @@
 $ git clone https://github.com/openshift/oc-mirror.git
 $ cd oc-mirror
 $ make build
-
-# Or
-
-$ wget https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/4.10.13/oc-mirror.tar.gz
 ~~~
 
 ## List Channels
