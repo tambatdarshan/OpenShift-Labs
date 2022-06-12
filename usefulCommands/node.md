@@ -86,7 +86,11 @@ $ oc extract -n openshift-machine-api secret/worker-user-data --keys=userData --
 
 ## Check Namespaces Bound to Container
 
+<https://www.nginx.com/blog/what-are-namespaces-cgroups-how-do-they-work/>
+
 ~~~bash
+
+# List all the namespaces which the process 3063686 is using
 
 $ lsns  -p 3063686
         NS TYPE   NPROCS     PID USER       COMMAND
