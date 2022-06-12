@@ -97,4 +97,26 @@ $ lsns  -p 3063686
 4026532505 net         1 3063686 1000860000 sleep 3600
 4026533367 mnt         1 3063686 1000860000 sleep 3600
 4026533368 pid         1 3063686 1000860000 sleep 3600
+
+# Seems we have to specify -m and -p at the same time so that we get correct PID tree
+
+$ nsenter -t 3063686 -m -p ps -ef
+UID          PID    PPID  C STIME TTY          TIME CMD
+root           1       0  0 13:51 ?        00:00:00 sleep 3600
+root          25       0  0 14:05 ?        00:00:00 ps -ef
+
+$ nsenter -t 3063686 -n ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+3: eth0@if41: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1450 qdisc noqueue state UP group default
+    link/ether 0a:58:0a:80:02:1f brd ff:ff:ff:ff:ff:ff link-netns 503ed3bc-029c-4454-942c-4c57992e9811
+    inet 10.128.2.31/23 brd 10.128.3.255 scope global eth0
+       valid_lft forever preferred_lft forever
+    inet6 fe80::c87a:5bff:fec3:f26f/64 scope link
+       valid_lft forever preferred_lft forever
+
 ~~~
