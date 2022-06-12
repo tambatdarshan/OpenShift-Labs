@@ -102,7 +102,9 @@ $ lsns  -p 3063686
 4026533367 mnt         1 3063686 1000860000 sleep 3600
 4026533368 pid         1 3063686 1000860000 sleep 3600
 
-# Seems we have to specify -m and -p at the same time so that we get correct PID tree
+# Seems we have to specify -m and -p at the same time so that we get correct PID tree because
+# mnt namespace will mount proc to /proc while the ps command will read information under /proc
+# thus we need mnt namespace together with pid namespace
 
 $ nsenter -t 3063686 -m -p ps -ef
 UID          PID    PPID  C STIME TTY          TIME CMD
@@ -122,5 +124,10 @@ $ nsenter -t 3063686 -n ip a
        valid_lft forever preferred_lft forever
     inet6 fe80::c87a:5bff:fec3:f26f/64 scope link
        valid_lft forever preferred_lft forever
+
+# Unknown question: why mount needs mnt and pid namespace to make it work ? Maybe because /proc
+# both needs mnt and pid namespace at the same time?
+
+$ nsenter -t 3063686 -m -p mount
 
 ~~~
