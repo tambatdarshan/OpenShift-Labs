@@ -88,6 +88,13 @@ $ oc extract -n openshift-machine-api secret/worker-user-data --keys=userData --
 
 ~~~bash
 
-$ lsns -p <pid>
-
+$ lsns  -p 3063686
+        NS TYPE   NPROCS     PID USER       COMMAND
+4026531835 cgroup    197       1 root       /usr/lib/systemd/systemd --switched-root --system --deserialize 16
+4026531837 user      197       1 root       /usr/lib/systemd/systemd --switched-root --system --deserialize 16
+4026532502 uts         1 3063686 1000860000 sleep 3600
+4026532503 ipc         1 3063686 1000860000 sleep 3600
+4026532505 net         1 3063686 1000860000 sleep 3600
+4026533367 mnt         1 3063686 1000860000 sleep 3600
+4026533368 pid         1 3063686 1000860000 sleep 3600
 ~~~
