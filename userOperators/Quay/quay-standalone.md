@@ -47,14 +47,14 @@ $ sudo podman run -d --rm --name redis \
 ## Configure Quay and Download the config.yaml
 
 ~~~bash
-$ sudo podman run --rm -it --name quay_config -p 80:8080 -p 443:8443 registry.redhat.io/quay/quay-rhel8:v3.5.7 config secret
+$ sudo podman run --rm -it --name quay_config -p 80:8080 -p 443:8443 registry.redhat.io/quay/quay-rhel8:v3.6.6 config secret
 ~~~
 
 ## Start Quay
 
 ~~~bash
 $
-$ podman run -d --rm -p 80:8080 -p 443:8443     --name=quay    -v /root/quay/config:/conf/stack:Z    -v /root/quay/storage:/datastorage:Z    registry.redhat.io/quay/quay-rhel8:v3.5.7
+$ podman run -d --rm -p 80:8080 -p 443:8443     --name=quay    -v /root/quay/config:/conf/stack:Z    -v /root/quay/storage:/datastorage:Z    registry.redhat.io/quay/quay-rhel8:v3.6.6
 ~~~
 
 openssl req -new -sha256 \
