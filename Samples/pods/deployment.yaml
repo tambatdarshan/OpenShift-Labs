@@ -83,3 +83,80 @@ spec:
       schedulerName: default-scheduler
       securityContext: {}
       terminationGracePeriodSeconds: 30
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-openshift
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hello-openshift
+  template:
+    metadata:
+      labels:
+        app: hello-openshift
+    spec:
+      containers:
+      - name: hello-openshift-1
+        image: registry.access.redhat.com/ubi8/ubi
+        command: ['sh', '-c', 'echo The app is running! && sleep 3600000']
+        volumeMounts:
+        - mountPath: "/usr/share/nginx/html"
+          name: task-pv-storage-1
+      - name: hello-openshift-2
+        image: registry.access.redhat.com/ubi8/ubi
+        command: ['sh', '-c', 'echo The app is running! && sleep 3600000']
+        volumeMounts:
+        - mountPath: "/usr/share/nginx/html"
+          name: task-pv-storage-2
+      initContainers:
+      - name: config-init-1
+        image: busybox:1.28
+        command: ['sh', '-c', 'echo init-1 && sleep 1']
+        resources:
+          requests:
+            cpu: "10m"
+            memory: "50Mi"
+          limits:
+            cpu: "20m"
+            memory: "50Mi"
+      - name: config-init-2
+        image: busybox:1.28
+        command: ['sh', '-c', 'echo init-2 && sleep 1']
+        resources:
+          requests:
+            cpu: "10m"
+            memory: "50Mi"
+          limits:
+            cpu: "20m"
+            memory: "50Mi"
+      - name: config-init-3
+        image: busybox:1.28
+        command: ['sh', '-c', 'echo init-3 && sleep 1']
+        resources:
+          requests:
+            cpu: "10m"
+            memory: "50Mi"
+          limits:
+            cpu: "20m"
+            memory: "50Mi"
+      - name: config-init-4
+        image: busybox:1.28
+        command: ['sh', '-c', 'echo init-4 && sleep 1']
+        resources:
+          requests:
+            cpu: "10m"
+            memory: "50Mi"
+          limits:
+            cpu: "20m"
+            memory: "50Mi"
+      volumes:
+      - name: task-pv-storage-1
+        persistentVolumeClaim:
+          claimName: task-pv-claim-1
+      - name: task-pv-storage-2
+        persistentVolumeClaim:
+          claimName: task-pv-claim-2
