@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: toolbox
+  labels:
+    app: toolbox
+spec:
+  containers:
+  - name: toolbox
+    image: registry.redhat.io/rhel8/support-tools:latest
+    command: ['sh', '-c', 'echo The app is running! && sleep 3600000']
