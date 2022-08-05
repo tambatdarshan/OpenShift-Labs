@@ -82,7 +82,7 @@ router-default-8549f7c945-mkhgb   1/1     Running   0          5m36s
 
 ## Configure Internal/External Ingress Controller sharding on an existing OpenShift 4.x cluster
 
-<https://access.redhat.com/solutions/4981211>
+<https://access.redhat.com/solutions/4  981211>
 
 ## How to avoid that the default ingresscontroller serves routes of all projects when using router sharding in OpenShift 4.x
 
