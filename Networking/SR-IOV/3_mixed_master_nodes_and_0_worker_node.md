@@ -1,12 +1,14 @@
 # Overview
+
 These post configuraiton steps used for 3 mixed master nodes + 0 worker node OCP (OpenShift Cloud Platform).
 
-# Configuration Steps
+## Configuration Steps
+
 + Login OCP cluster management jump server
 
 + Configure OCP cluster management token, skip this step if you already done
 
-  ```
+  ```bash
   Copy OCP cluster management token from https://cloud.redhat.com/openshift/token/show with your RedHat account
 
   [root@ocp-manage-repo ~]# token=ocp_clusters_management_token
@@ -15,7 +17,7 @@ These post configuraiton steps used for 3 mixed master nodes + 0 worker node OCP
 
 + Install kubectl and oc (OpenShift CLI) binaries, skip this step if you already done
 
-  ```
+  ```bash
   [root@ocp-manage-repo ~]# wget https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable/openshift-client-linux.tar.gz
   [root@ocp-manage-repo ~]# tar -xvzf openshift-client-linux.tar.gz -C /usr/local/bin && rm -f openshift-client-linux.tar.gz
   [root@ocp-manage-repo ~]# echo "source <(kubectl completion bash)" >>  ~/.bashrc
@@ -25,7 +27,7 @@ These post configuraiton steps used for 3 mixed master nodes + 0 worker node OCP
 
 + Download kubeconfig file of target OCP cluster and set KUBECONFIG environment variable
 
-  ```
+  ```bash
   Get target OCP cluster name with `aicli list clusters` command or OCP cluster management dashboard
 
   [root@ocp-manage-repo ~]# cluster_name=target_ocp_cluster_name
@@ -35,7 +37,7 @@ These post configuraiton steps used for 3 mixed master nodes + 0 worker node OCP
 
 + Configure local DNS domain for target OCP cluster
 
-  ```
+  ```bash
   Get target OCP cluster name and base DNS domain with `aicli list clusters` command or OCP cluster management dashboard
 
   [root@ocp-manage-repo ~]# cluster_name=target_ocp_cluster_name
@@ -46,7 +48,7 @@ These post configuraiton steps used for 3 mixed master nodes + 0 worker node OCP
 
 + Check if kubectl or oc cmd can get expected output
 
-  ```
+  ```bash
   [root@ocp-manage-repo ~]# kubectl get nodes
   NAME                            STATUS   ROLES           AGE   VERSION
   hztt24f-rm17-ocp-01-master-01   Ready    master,worker   26d   v1.21.1+f36aa36
@@ -62,7 +64,7 @@ These post configuraiton steps used for 3 mixed master nodes + 0 worker node OCP
 
 + Download ocp-om reposity
 
-  ```
+  ```bash
   [root@ocp-manage-repo ~]# git clone https://gitlabe2.ext.net.nokia.com/cloud-infra/ocp-om.git
   ```
 
@@ -81,13 +83,16 @@ These post configuraiton steps used for 3 mixed master nodes + 0 worker node OCP
 + Run playbooks with tag one by one in ocp-om/playbooks folder
 
     - [root@ocp-manage-repo ~]# ./01-playbook.yaml --tags apply-01 -vv -e '{kernel_modules_nodeselector: master}' #Load required kernel modules, including sctp, vhost-net, etc. `One time restart`
-      ```
+
+      ```bash
       Check the output of `oc get mcp master` until UPDATING status changed from True to False and READYMACHINECOUNT same as MACHINECOUNT
 
       [root@ocp-manage-repo ~]# oc get mcp master
       ```
+
     - [root@ocp-manage-repo ~]# ./01-playbook.yaml --tags apply-02 -vv   #Deploy NFD(Node Feature Discovery) operator to add host labels, e.g. OS version, CPU attributes, etc.
-      ```
+
+      ```bash
       [root@ocp-manage-repo ~]# kubectl get pod -n openshift-nfd
       NAME                            READY   STATUS    RESTARTS   AGE
       nfd-master-pjjc5                1/1     Running   5          25d
@@ -99,8 +104,10 @@ These post configuraiton steps used for 3 mixed master nodes + 0 worker node OCP
       nfd-worker-kdlp4                1/1     Running   5          25d
 
       ```
+
     - [root@ocp-manage-repo ~]# ./01-playbook.yaml --tags apply-03 -vv   #Deploy SR-IOV operator
-      ```
+
+      ```bash
       [root@ocp-manage-repo ~]# kubectl get pod -n openshift-sriov-network-operator
       NAME                                     READY   STATUS    RESTARTS   AGE
       operator-webhook-8qkn6                   1/1     Running   0          43h
@@ -112,8 +119,10 @@ These post configuraiton steps used for 3 mixed master nodes + 0 worker node OCP
       sriov-network-operator-8cbf66595-cqndr   1/1     Running   0          43h
 
       ```
+
     - [root@ocp-manage-repo ~]# ./01-playbook.yaml --tags apply-04 -vv   #Deploy SR-IOV device pool. `Two times restart`
-      ```
+
+      ```bash
       [root@ocp-manage-repo ~]# kubectl get pod -n openshift-sriov-network-operator
       NAME                                     READY   STATUS    RESTARTS   AGE
       operator-webhook-8qkn6                   1/1     Running   0          43h
@@ -131,15 +140,18 @@ These post configuraiton steps used for 3 mixed master nodes + 0 worker node OCP
       sriov-network-operator-8cbf66595-cqndr   1/1     Running   0          43h
 
       ```
+
     - [root@ocp-manage-repo ~]# ./01-playbook.yaml --tags apply-05 -vv -e '{pao_profile_nodeselector: master}'    #Deploy PAO (Performance Addon Operator) to config performance profiles, e.g. CPU manager, CPU isolation, hugepage, etc. `Two times restart`
-      ```
+
+      ```bash
       Check the output of `oc get mcp master` until UPDATING status changed from True to False and READYMACHINECOUNT same as MACHINECOUNT
 
       [root@ocp-manage-repo ~]# oc get mcp master
       ```
 
     - [root@ocp-manage-repo ~]# ./01-playbook.yaml --tags apply-06 -vv    #Deploy PTP service, only needed for OE based vDU (C-RAN)
-      ```
+
+      ```bash
       [root@ocp-manage-repo new_sno]# kubectl get pod -n openshift-ptp
       NAME                           READY   STATUS    RESTARTS   AGE
       linuxptp-daemon-g2wrl          2/2     Running   0          9h
@@ -149,16 +161,20 @@ These post configuraiton steps used for 3 mixed master nodes + 0 worker node OCP
       linuxptp-daemon-vxd55          2/2     Running   0          9h
       ptp-operator-77f84587c-79tc4   1/1     Running   0          9h
       ```
+
     - [root@ocp-manage-repo ~]# ./01-playbook.yaml --tags apply-08 -vv    #Configure admin user (nokiaadmin/nokiaadmin)
 
     - [root@ocp-manage-repo ~]# ./01-playbook.yaml --tags apply-09 -vv -e '{unsafe_sysctls_nodeselector: master}'    #Configure unsafe sysctl parameters. `Two times restart`
-      ```
+
+      ```bash
       Check the output of `oc get mcp master` until UPDATING status changed from True to False and READYMACHINECOUNT same as MACHINECOUNT
 
       [root@ocp-manage-repo ~]# oc get mcp master
       ```
+
     - Workaround to enable unsafe sysctls configuration for mixed master nodes via delete created profile and repeat step 9
-      ```
+
+      ```bash
       [root@ocp-manage-repo ~]# oc delete kubeletconfigs.machineconfiguration.openshift.io performance-sysctl-master
       [root@ocp-manage-repo ~]# ./01-playbook.yaml --tags apply-09 -vv -e '{unsafe_sysctls_nodeselector: master}'  #Configure unsafe sysctls parameters for mixed master nodes. `Two times restart`
 
