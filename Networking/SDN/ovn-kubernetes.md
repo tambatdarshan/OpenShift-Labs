@@ -6,6 +6,39 @@
 
 North Bound -> ovn-northd -> South Bound -> ovn-controller -> ovs DB -> vswitchd
 
+                                      apiserver
+                                          |
+                                          |
+                              +-----------|-----------+
+                              |           |           |
+                              |     OVN-Kubernetes    |
+                              |           |           |
+                              |           |           |
+                              |   OVN Northbound DB   |
+                              |           |           |
+                              |           |           |
+                              |       ovn-northd      |
+                              |           |           |
+                              +-----------|-----------+
+                                          |
+                                          |
+                                +-------------------+
+                                | OVN Southbound DB |
+                                +-------------------+
+                                          |
+                                          |
+                       +------------------+------------------+
+                       |                  |                  |
+         Worker 1      |                  |    Worker n      |
+       +---------------|---------------+  .  +---------------|---------------+
+       |               |               |  .  |               |               |
+       |        ovn-controller         |  .  |        ovn-controller         |
+       |         |          |          |  .  |         |          |          |
+       |         |          |          |     |         |          |          |
+       |  ovs-vswitchd   ovsdb-server  |     |  ovs-vswitchd   ovsdb-server  |
+       |                               |     |                               |
+       +-------------------------------+     +-------------------------------+
+
 * Check Pods:
 
 ~~~bash
