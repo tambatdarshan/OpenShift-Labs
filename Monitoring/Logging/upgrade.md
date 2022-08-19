@@ -20,7 +20,7 @@ elasticsearch-operator.4.6.0-202106021513   OpenShift Elasticsearch Operator   4
 ## Optional: Update the OperatorHub if it is disconnected environment
 
 ~~~bash
-# Specify related environments first 
+# Specify related environments first
 $ opm index prune     -f registry.redhat.io/redhat/redhat-operator-index:v4.8     -p cluster-logging,elasticsearch-operator     -t $REGISTRY_IP:5000/$NAMESPACE/redhat-operator-index:v4.8
 
 $ podman push $REGISTRY_IP:5000/$NAMESPACE/redhat-operator-index:v4.8
@@ -44,7 +44,7 @@ clusterlogging.4.6.0-202106021513   Cluster Logging                    4.6.0-202
 elasticsearch-operator.5.1.1-36     OpenShift Elasticsearch Operator   5.1.1-36             elasticsearch-operator.4.6.0-202106021513
 ~~~
 
-## update Cluster Logging Operator to 5.1: the same steps with ElasticSearch Operator
+## Update Cluster Logging Operator to 5.1: the same steps with ElasticSearch Operator
 
 ~~~bash
 # oc get csv -n openshift-logging
