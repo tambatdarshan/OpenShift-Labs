@@ -1,5 +1,7 @@
 # Baremetal IPI Installation
 
+## Create Provisioner Node
+
 ## Pre-create VMs
 
 ~~~bash
