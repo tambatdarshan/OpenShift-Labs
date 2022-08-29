@@ -5,7 +5,6 @@
 ~~~bash
 $ oc get networks
 
-
 networking:
   clusterNetwork:
   - cidr: 10.128.0.0/14
