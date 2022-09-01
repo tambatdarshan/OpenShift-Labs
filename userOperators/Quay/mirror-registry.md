@@ -42,7 +42,6 @@ $ oc create secret generic dockerhub --from-file=.dockerconfigjson=/tmp/config.j
 
 ~~~
 
-
 ## Edit BuildConfig to use your own Quay
 
 ~~~bash
