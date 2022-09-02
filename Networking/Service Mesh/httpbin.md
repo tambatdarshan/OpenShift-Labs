@@ -20,7 +20,10 @@ httpbin-d59d7f86c-jp4wf   2/2     Running   0          9m40s
 
 ~~~bash
 
-$ oc create -n istio-system secret tls httpbin-credential --key=privkey.pem --cert=cert.pem # The key is wildcard certificate for *.apps.mycluster.nancyge.com
+$ oc -n openshift-ingress extract secret/router-certs-default --to=- --keys=tls.crt > /tmp/tls.crt
+$ oc -n openshift-ingress extract secret/router-certs-default --to=- --keys=tls.key > /tmp/tls.key
+$ oc create -n istio-system secret tls httpbin-credential --key=/tmp/tls.key --cert=/tmp/tls.crt # The key is wildcard certificate for *.apps.mycluster.nancyge.com
+# For dumping CARoot of Ingress, use: $ oc extract secret/router-ca -n openshift-ingress-operator --to=- --keys=tls.crt
 
 ~~~
 
