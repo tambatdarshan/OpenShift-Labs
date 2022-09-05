@@ -14,8 +14,8 @@ spec:
     spec:
       containers:
         - name: backend
-          image: twalter/openshift-nginx:latest
-          imagePullPolicy: Always
+          image: quay.io/rhn_support_cchen/nginx:latest
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8081
               protocol: TCP
