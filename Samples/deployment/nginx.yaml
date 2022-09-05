@@ -1,3 +1,5 @@
+# Need to use with backend.yaml
+# https://www.cnblogs.com/bigberg/p/7651197.html
 kind: Deployment
 apiVersion: apps/v1
 metadata:
@@ -64,7 +66,7 @@ data:
 
               location /proxy/ {
                 add_header Content-Type text/plain;
-                proxy_pass http://backend:8081;
+                proxy_pass http://backend:8081/;
               }
             }
 
