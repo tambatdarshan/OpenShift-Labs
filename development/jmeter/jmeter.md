@@ -46,4 +46,30 @@ export PATH=${JMETER_HOME}/bin:$PATH
 
 * Run the test and check the result
 
-![check_report](../images/check_report.png)
+~~~bash
+
+$ oc get pods
+NAME                               READY   STATUS      RESTARTS   AGE
+openshift-flask-2-build            0/1     Completed   0          38m
+openshift-flask-598b7c644f-2fjnj   1/1     Running     0          36m
+openshift-flask-598b7c644f-74pzm   1/1     Running     0          3s
+openshift-flask-598b7c644f-8g54m   1/1     Running     0          2m51s
+openshift-flask-598b7c644f-tnd4r   1/1     Running     0          3m28s
+
+~~~
+
+![check_report](../images/check_report-1.png)
+
+~~~bash
+
+# Shrink the replica from 4 to 2
+
+$ oc get pods
+NAME                               READY   STATUS      RESTARTS   AGE
+openshift-flask-2-build            0/1     Completed   0          57m
+openshift-flask-598b7c644f-2fjnj   1/1     Running     0          55m
+openshift-flask-598b7c644f-8g54m   1/1     Running     0          21m
+
+~~~
+
+![check_report_2](../images/check_report-2.png)
