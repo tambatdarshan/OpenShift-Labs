@@ -30,7 +30,11 @@ export PATH=${JMETER_HOME}/bin:$PATH
 
 ## Run Some Test
 
-* We firstly add `http request sampler` under `Threads Groups`
+* We firstly create `Thread Group` under `Test Plan`
+
+![add_thread_group](../images/add_thread_group.png)
+
+* Then we add `http request sampler` under `Threads Groups`
 
 ![add_http_request](../images/add_http_request.png)
 
