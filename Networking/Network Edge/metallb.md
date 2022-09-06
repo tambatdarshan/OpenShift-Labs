@@ -103,3 +103,24 @@ Thank you for using nginx.
 $ oc delete svc nginx-service # Release the IP because the lab could use it
 
 ~~~
+
+## TroubleShooting
+
+~~~bash
+
+$ oc logs controller-b8f4c8565-kzd4l -c controller -n metallb-system
+
+{"caller":"level.go:63","event":"ipAllocated","ip":["10.72.36.222"],"level":"info","msg":"IP address assigned by controller","service":"test-external-ip/nginx-service","ts":"2022-09-06T13:00:52.098786622Z"}
+{"caller":"level.go:63","event":"serviceUpdated","level":"info","msg":"updated service object","service":"test-external-ip/nginx-service","ts":"2022-09-06T13:00:52.105525249Z"} # svc is created and 10.72.36.222 is allocated
+{"caller":"level.go:63","event":"serviceDeleted","level":"info","msg":"service deleted","service":"test-external-ip/nginx-service","ts":"2022-09-06T13:40:09.213370924Z"} # We deleted the svc and the IP is released
+
+$ oc logs speaker-899k9 -c speaker | grep event
+{"caller":"level.go:63","event":"createARPResponder","interface":"eno2","level":"info","msg":"created ARP responder for interface","ts":"2022-09-06T12:57:25.427608889Z"}
+{"caller":"level.go:63","event":"createARPResponder","interface":"eno3","level":"info","msg":"created ARP responder for interface","ts":"2022-09-06T12:57:25.428799326Z"}
+{"caller":"level.go:63","event":"createARPResponder","interface":"eno4","level":"info","msg":"created ARP responder for interface","ts":"2022-09-06T12:57:25.429860382Z"}
+{"caller":"level.go:63","event":"createARPResponder","interface":"br-ex","level":"info","msg":"created ARP responder for interface","ts":"2022-09-06T12:57:25.431026362Z"} # It creates APR responder on all the interfaces so that it could responde ARP broadcast back to the ARP requester
+{"caller":"level.go:63","level":"info","msg":"node event - forcing sync","node addr":"10.72.36.88","node event":"NodeJoin","node name":"dell-per430-35.gsslab.pek2.redhat.com","ts":"2022-09-06T12:57:25.443214464Z"}
+{"caller":"level.go:63","event":"serviceAnnounced","ips":["10.72.36.222"],"level":"info","msg":"service has IP, announcing","pool":"doc-example","protocol":"layer2","service":"test-external-ip/nginx-service","ts":"2022-09-06T13:00:52.106230911Z"} # All the NICs will respond ARP for 10.72.36.222
+{"caller":"level.go:63","event":"serviceWithdrawn","ip":null,"level":"info","msg":"withdrawing service announcement","reason":"serviceDeleted","service":"test-external-ip/nginx-service","ts":"2022-09-06T13:40:09.212913624Z"} # svc is deleted and announcement is withdrawed
+
+~~~
