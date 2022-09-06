@@ -6,7 +6,7 @@ metadata:
 spec:
   clusterIP: 172.30.163.110
   externalIPs:
-  - 10.72.36.151
+  - 10.72.36.156
   externalTrafficPolicy: Cluster
   ports:
   - nodePort: 31903
