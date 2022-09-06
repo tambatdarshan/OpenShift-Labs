@@ -61,13 +61,12 @@ openshift-flask-598b7c644f-tnd4r   1/1     Running     0          3m28s
 ![check_report](../images/check_report-1.png)
 
 ~~~bash
-# Shrink Pods from 4 to 2
-$ oc get pods
+$ oc get pods # Shrink Pods from 4 to 2
+
 NAME                               READY   STATUS      RESTARTS   AGE
 openshift-flask-2-build            0/1     Completed   0          57m
 openshift-flask-598b7c644f-2fjnj   1/1     Running     0          55m
 openshift-flask-598b7c644f-8g54m   1/1     Running     0          21m
-
 ~~~
 
 ![check_report_2](../images/check_report-2.png)
