@@ -1,1 +1,3 @@
-development/images/.DS_Store
+*.DS_Store
+.gitignore
+.markdownlink.yml
