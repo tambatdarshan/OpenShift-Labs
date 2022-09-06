@@ -74,3 +74,7 @@ openshift-flask-598b7c644f-8g54m   1/1     Running     0          21m
 ~~~
 
 ![check_report_2](../images/check_report-2.png)
+
+* Save the Test Plan as jmx file
+
+![save_test_plan](../images/save_test_plan.png)
