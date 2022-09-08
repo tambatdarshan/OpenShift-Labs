@@ -106,6 +106,8 @@ $ oc delete svc nginx-service # Release the IP because the lab could use it
 
 ## TroubleShooting
 
+<https://github.com/metallb/metallb/blob/main/internal/layer2/arp.go>
+
 ~~~bash
 
 $ oc logs controller-b8f4c8565-kzd4l -c controller -n metallb-system
