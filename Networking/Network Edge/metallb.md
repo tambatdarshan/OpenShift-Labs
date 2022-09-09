@@ -11,7 +11,7 @@ $ oc new-project metallb-system # Then Install the Metal LB Operator from Operat
 
 ~~~bash
 
-$ oc apply -f files/metallb-cr.yaml
+$ oc apply -f files/metallb-metallb-cr.yaml
 
 $ oc get all -n metallb-system
 NAME                                                       READY   STATUS    RESTARTS   AGE
@@ -41,7 +41,7 @@ replicaset.apps/metallb-operator-controller-manager-8676679d9d   1         1    
 
 ~~~bash
 
-$ oc apply -f files/addresspools-cr.yaml
+$ oc apply -f files/metallb-addresspools-cr.yaml
 
 ~~~
 
@@ -124,5 +124,12 @@ $ oc logs speaker-899k9 -c speaker | grep event
 {"caller":"level.go:63","level":"info","msg":"node event - forcing sync","node addr":"10.72.36.88","node event":"NodeJoin","node name":"dell-per430-35.gsslab.pek2.redhat.com","ts":"2022-09-06T12:57:25.443214464Z"}
 {"caller":"level.go:63","event":"serviceAnnounced","ips":["10.72.36.222"],"level":"info","msg":"service has IP, announcing","pool":"doc-example","protocol":"layer2","service":"test-external-ip/nginx-service","ts":"2022-09-06T13:00:52.106230911Z"} # All the NICs will respond ARP for 10.72.36.222
 {"caller":"level.go:63","event":"serviceWithdrawn","ip":null,"level":"info","msg":"withdrawing service announcement","reason":"serviceDeleted","service":"test-external-ip/nginx-service","ts":"2022-09-06T13:40:09.212913624Z"} # svc is deleted and announcement is withdrawed
+
+~~~
+
+~~~bash
+
+$ sudo iptables -t nat -nL | grep 222 # On the OCP Node
+DNAT       tcp  --  0.0.0.0/0            10.72.36.222         tcp dpt:8080 to:172.30.163.110:8080
 
 ~~~
