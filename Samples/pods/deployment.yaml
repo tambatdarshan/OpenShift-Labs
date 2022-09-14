@@ -19,6 +19,26 @@ spec:
         command: ['sh', '-c', 'echo The app is running! && sleep 3600000']
 
 ---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: httpd
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: httpd
+  template:
+    metadata:
+      labels:
+        app: httpd
+    spec:
+      containers:
+      - name: httpd
+        image: registry.access.redhat.com/ubi8/ubi
+        command: ["sh", "-c", "echo 'The app is running' > /var/www/html/index.html; httpd -f -p 8080 -h /var/www/html"]
+
+---
 
 apiVersion: apps/v1
 kind: Deployment
