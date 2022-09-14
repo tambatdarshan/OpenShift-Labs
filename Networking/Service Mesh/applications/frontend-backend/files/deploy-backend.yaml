@@ -13,7 +13,7 @@ metadata:
     app.openshift.io/runtime: quarkus
     app.openshift.io/runtime-version: '8'
 spec:
-  replicas: 1
+  replicas: 4
   selector:
     matchLabels:
       app: backend
@@ -103,7 +103,7 @@ spec:
             memory: 120Mi
         env:
           - name: APP_BACKEND
-            value: https://httpbin.org/delay/5
+            value: https://httpbin.org/delay/2
           - name: APP_VERSION
             value: v2
           - name: quarkus.log.console.color
