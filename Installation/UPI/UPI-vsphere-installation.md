@@ -88,31 +88,32 @@ $ export GOVC_INSECURE=true
 3. Clone template to Virtual Machine - bootstrap, master-[0-2], worker-[0-1]
 
 ~~~bash
-$ Folder=4.7.33
-$ Template=template-rhcos-4.7.33
+$ Folder=4.10.3
+$ Template=template-rhcos-4.10.3
+$ DNS=10.72.94.119
 $ govc vm.clone -vm $Template -c=4 -m=8192 -folder=$Folder -host=vmware-host01.rhts.gsslab.pek2.redhat.com -on=false -ds=datastore1 bootstrap &
 $ for i in 0 1 2
 do
-govc vm.clone \
--vm $Template \
--c=8 -m=16384 \
--folder=$Folder \
--host=vmware-host0`expr $i + 2`.rhts.gsslab.pek2.redhat.com \
--on=false \
--ds=datastore`expr $i + 2` \
-master$i &
+  govc vm.clone \
+  -vm $Template \
+  -c=8 -m=16384 \
+  -folder=$Folder \
+  -host=vmware-host0`expr $i + 2`.rhts.gsslab.pek2.redhat.com \
+  -on=false \
+  -ds=datastore`expr $i + 2` \
+  master$i &
 done
 
 $ for i in 0 1
 do
-govc vm.clone \
--vm $Template \
--c=4 -m=8192 \
--folder=$Folder \
--host=vmware-host0`expr $i + 2`.rhts.gsslab.pek2.redhat.com \
--on=false \
--ds=datastore`expr $i + 2` \
-worker$i &
+  govc vm.clone \
+  -vm $Template \
+  -c=4 -m=8192 \
+  -folder=$Folder \
+  -host=vmware-host0`expr $i + 2`.rhts.gsslab.pek2.redhat.com \
+  -on=false \
+  -ds=datastore`expr $i + 2` \
+  worker$i &
 done
 ~~~
 
@@ -120,9 +121,9 @@ done
 
 ~~~bash
 
-MASTER_IGN=`cat install/master.64`
-WORKER_IGN=`cat install/worker.64`
-BOOTSTRAP_IGN=`cat install/merge-bootstrap.64`
+$ MASTER_IGN=`cat install/master.64`
+$ WORKER_IGN=`cat install/worker.64`
+$ BOOTSTRAP_IGN=`cat install/merge-bootstrap.64`
 
 ~~~
 
@@ -131,7 +132,7 @@ BOOTSTRAP_IGN=`cat install/merge-bootstrap.64`
 ~~~bash
 
 # Bootstrap
-IPCFG="ip=10.72.94.248::10.72.94.254:255.255.255.0:bootstrap.vmware.cchen.work::none nameserver=10.72.94.119"
+IPCFG="ip=10.72.94.248::10.72.94.254:255.255.255.0:bootstrap.vmware.cchen.work::none nameserver=$DNS"
 govc vm.change -vm bootstrap -e "guestinfo.afterburn.initrd.network-kargs=${IPCFG}"
 govc vm.change -vm bootstrap -e "guestinfo.ignition.config.data=${BOOTSTRAP_IGN}"
 govc vm.change -vm bootstrap -e "guestinfo.ignition.config.data.encoding=base64"
@@ -141,7 +142,7 @@ govc vm.change -vm bootstrap -e "disk.EnableUUID=TRUE"
 # Master
 $ for i in 0 1 2
 do
-IPCFG="ip=10.72.94.23$i::10.72.94.254:255.255.255.0:master$i.vmware.cchen.work::none nameserver=10.72.94.119"
+IPCFG="ip=10.72.94.23$i::10.72.94.254:255.255.255.0:master$i.vmware.cchen.work::none nameserver=$DNS"
 govc vm.change -vm master$i -e "guestinfo.afterburn.initrd.network-kargs=${IPCFG}"
 govc vm.change -vm master$i -e "guestinfo.ignition.config.data=${MASTER_IGN}"
 govc vm.change -vm master$i -e "guestinfo.ignition.config.data.encoding=base64"
@@ -152,7 +153,7 @@ done
 # Worker
 $ for i in 0 1
 do
-IPCFG="ip=10.72.94.24$i::10.72.94.254:255.255.255.0:worker$i.vmware.cchen.work::none nameserver=10.72.94.119"
+IPCFG="ip=10.72.94.24$i::10.72.94.254:255.255.255.0:worker$i.vmware.cchen.work::none nameserver=$DNS"
 govc vm.change -vm worker$i -e "guestinfo.afterburn.initrd.network-kargs=${IPCFG}"
 govc vm.change -vm worker$i -e "guestinfo.ignition.config.data=${WORKER_IGN}"
 govc vm.change -vm worker$i -e "guestinfo.ignition.config.data.encoding=base64"
