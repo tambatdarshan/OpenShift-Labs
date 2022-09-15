@@ -131,34 +131,36 @@ $ BOOTSTRAP_IGN=`cat install/merge-bootstrap.64`
 
 ~~~bash
 
-# Bootstrap
-IPCFG="ip=10.72.94.248::10.72.94.254:255.255.255.0:bootstrap.vmware.cchen.work::none nameserver=$DNS"
-govc vm.change -vm bootstrap -e "guestinfo.afterburn.initrd.network-kargs=${IPCFG}"
-govc vm.change -vm bootstrap -e "guestinfo.ignition.config.data=${BOOTSTRAP_IGN}"
-govc vm.change -vm bootstrap -e "guestinfo.ignition.config.data.encoding=base64"
-govc vm.change -vm bootstrap -e "guestinfo.hostname=bootstrap.vmware.cchen.work"
-govc vm.change -vm bootstrap -e "disk.EnableUUID=TRUE"
+# Bootstrap; Add it to a loop to make copy easier
+for i in 0; do
+  IPCFG="ip=10.72.94.248::10.72.94.254:255.255.255.0:bootstrap.vmware.cchen.work::none nameserver=$DNS"
+  govc vm.change -vm bootstrap -e "guestinfo.afterburn.initrd.network-kargs=${IPCFG}"
+  govc vm.change -vm bootstrap -e "guestinfo.ignition.config.data=${BOOTSTRAP_IGN}"
+  govc vm.change -vm bootstrap -e "guestinfo.ignition.config.data.encoding=base64"
+  govc vm.change -vm bootstrap -e "guestinfo.hostname=bootstrap.vmware.cchen.work"
+  govc vm.change -vm bootstrap -e "disk.EnableUUID=TRUE"
+done
 
 # Master
 $ for i in 0 1 2
 do
-IPCFG="ip=10.72.94.23$i::10.72.94.254:255.255.255.0:master$i.vmware.cchen.work::none nameserver=$DNS"
-govc vm.change -vm master$i -e "guestinfo.afterburn.initrd.network-kargs=${IPCFG}"
-govc vm.change -vm master$i -e "guestinfo.ignition.config.data=${MASTER_IGN}"
-govc vm.change -vm master$i -e "guestinfo.ignition.config.data.encoding=base64"
-govc vm.change -vm master$i -e "guestinfo.hostname=master$i.vmware.cchen.work"
-govc vm.change -vm master$i -e "disk.EnableUUID=TRUE"
+  IPCFG="ip=10.72.94.23$i::10.72.94.254:255.255.255.0:master$i.vmware.cchen.work::none nameserver=$DNS"
+  govc vm.change -vm master$i -e "guestinfo.afterburn.initrd.network-kargs=${IPCFG}"
+  govc vm.change -vm master$i -e "guestinfo.ignition.config.data=${MASTER_IGN}"
+  govc vm.change -vm master$i -e "guestinfo.ignition.config.data.encoding=base64"
+  govc vm.change -vm master$i -e "guestinfo.hostname=master$i.vmware.cchen.work"
+  govc vm.change -vm master$i -e "disk.EnableUUID=TRUE"
 done
 
 # Worker
 $ for i in 0 1
 do
-IPCFG="ip=10.72.94.24$i::10.72.94.254:255.255.255.0:worker$i.vmware.cchen.work::none nameserver=$DNS"
-govc vm.change -vm worker$i -e "guestinfo.afterburn.initrd.network-kargs=${IPCFG}"
-govc vm.change -vm worker$i -e "guestinfo.ignition.config.data=${WORKER_IGN}"
-govc vm.change -vm worker$i -e "guestinfo.ignition.config.data.encoding=base64"
-govc vm.change -vm worker$i -e "guestinfo.hostname=worker$i"
-govc vm.change -vm worker$i -e "disk.EnableUUID=TRUE"
+  IPCFG="ip=10.72.94.24$i::10.72.94.254:255.255.255.0:worker$i.vmware.cchen.work::none nameserver=$DNS"
+  govc vm.change -vm worker$i -e "guestinfo.afterburn.initrd.network-kargs=${IPCFG}"
+  govc vm.change -vm worker$i -e "guestinfo.ignition.config.data=${WORKER_IGN}"
+  govc vm.change -vm worker$i -e "guestinfo.ignition.config.data.encoding=base64"
+  govc vm.change -vm worker$i -e "guestinfo.hostname=worker$i"
+  govc vm.change -vm worker$i -e "disk.EnableUUID=TRUE"
 done
 
 ~~~
