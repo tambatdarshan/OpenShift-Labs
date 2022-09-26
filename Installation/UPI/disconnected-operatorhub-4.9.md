@@ -37,18 +37,36 @@ $ openssl req -x509 \
 
 $ openssl genrsa -out /etc/crts/cert.key 2048
 
+# $ openssl req -new -sha256 \
+#     -key /etc/crts/cert.key \
+#     -subj "/O=Local Cert/CN=$REGISTRY_HOST" \
+#     -reqexts SAN \
+#     -config <(cat /etc/pki/tls/openssl.cnf \
+#         <(printf "\n[SAN]\nsubjectAltName=DNS:$REGISTRY_HOST\nbasicConstraints=critical, CA:FALSE\nkeyUsage=digitalSignature, keyEncipherment, keyAgreement, dataEncipherment\nextendedKeyUsage=serverAuth")) \
+#     -out /etc/crts/cert.csr
+
+# $ openssl x509 \
+#     -req \
+#     -sha256 \
+#     -extfile <(printf "subjectAltName=DNS:$REGISTRY_HOST\nbasicConstraints=critical, CA:FALSE\nkeyUsage=digitalSignature, keyEncipherment, keyAgreement, dataEncipherment\nextendedKeyUsage=serverAuth") \
+#     -days 3650 \
+#     -in /etc/crts/cert.csr \
+#     -CA /etc/crts/cert.ca.crt \
+#     -CAkey /etc/crts/cert.ca.key \
+#     -CAcreateserial -out /etc/crts/cert.crt
+
 $ openssl req -new -sha256 \
     -key /etc/crts/cert.key \
     -subj "/O=Local Cert/CN=$REGISTRY_HOST" \
     -reqexts SAN \
     -config <(cat /etc/pki/tls/openssl.cnf \
-        <(printf "\n[SAN]\nsubjectAltName=DNS:$REGISTRY_HOST\nbasicConstraints=critical, CA:FALSE\nkeyUsage=digitalSignature, keyEncipherment, keyAgreement, dataEncipherment\nextendedKeyUsage=serverAuth")) \
+        <(printf "\n[SAN]\nsubjectAltName=IP:$REGISTRY_HOST\nbasicConstraints=critical, CA:FALSE\nkeyUsage=digitalSignature, keyEncipherment, keyAgreement, dataEncipherment\nextendedKeyUsage=serverAuth")) \
     -out /etc/crts/cert.csr
 
 $ openssl x509 \
     -req \
     -sha256 \
-    -extfile <(printf "subjectAltName=DNS:$REGISTRY_HOST\nbasicConstraints=critical, CA:FALSE\nkeyUsage=digitalSignature, keyEncipherment, keyAgreement, dataEncipherment\nextendedKeyUsage=serverAuth") \
+    -extfile <(printf "subjectAltName=IP:$REGISTRY_HOST\nbasicConstraints=critical, CA:FALSE\nkeyUsage=digitalSignature, keyEncipherment, keyAgreement, dataEncipherment\nextendedKeyUsage=serverAuth") \
     -days 3650 \
     -in /etc/crts/cert.csr \
     -CA /etc/crts/cert.ca.crt \
