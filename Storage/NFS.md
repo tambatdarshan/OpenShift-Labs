@@ -1,5 +1,7 @@
 # NFS
 
+![CSI Driver Architecture](images/CSI_driver_arch.png)
+
 ## How to use NFS StorageClass in OCP4
 
 <https://two-oes.medium.com/working-with-nfs-as-a-storageclass-in-openshift-4-44367576771c>
@@ -11,7 +13,7 @@
 ### Change rbac.yaml
 
 ~~~bash
-$ git clone https://github.com/kubernetes-incubator/external-storage.git kubernetes-incubator
+$ git clone https://github.com/kubernetes-sigs/nfs-subdir-external-provisioner.git
 
 $ oc create namespace openshift-nfs-storage
 
@@ -21,7 +23,7 @@ $ oc label namespace openshift-nfs-storage "openshift.io/cluster-monitoring=true
 $ oc project openshift-nfs-storage
 
 # Next we will update the deployment and the RBAC accordingly:
-$ cd kubernetes-incubator/nfs-client/
+$ cd nfs-subdir-external-provisioner
 $ NAMESPACE=`oc project -q`
 $ sed -i'' "s/namespace:.*/namespace: $NAMESPACE/g" ./deploy/rbac.yaml
 $ sed -i'' "s/namespace:.*/namespace: $NAMESPACE/g" ./deploy/deployment.yaml
@@ -37,38 +39,34 @@ $ oc adm policy add-scc-to-user hostmount-anyuid system:serviceaccount:$NAMESPAC
 * from
 
 ~~~yaml
-env:
+          env:
             - name: PROVISIONER_NAME
-              value: fuseim.pri/ifs
+              value: k8s-sigs.io/nfs-subdir-external-provisioner
             - name: NFS_SERVER
-              value: <YOUR NFS SERVER HOSTNAME>
+              value: 10.3.243.101
             - name: NFS_PATH
-              value: /var/nfs
+              value: /ifs/kubernetes
       volumes:
         - name: nfs-client-root
           nfs:
-            server: <YOUR NFS SERVER HOSTNAME>
-            path: /var/nfs
+            server: 10.3.243.101
+            path: /ifs/kubernetes
 ~~~
 
 * to:
 
 ~~~yaml
-image: gcr.io/k8s-staging-sig-storage/nfs-subdir-external-provisioner:v4.0.0
-volumeMounts:
-  - name: nfs-client-root
-  mountPath: /persistentvolumes
-env:
+          env:
             - name: PROVISIONER_NAME
-              value: storage.io/nfs
+              value: k8s-sigs.io/nfs-subdir-external-provisioner
             - name: NFS_SERVER
-              value: nfs-server.example.com
+              value: 10.72.94.119
             - name: NFS_PATH
               value: /var/nfsshare
       volumes:
         - name: nfs-client-root
           nfs:
-            server: nfs-server.example.com
+            server: 10.72.94.119
             path: /var/nfsshare
 ~~~
 
@@ -80,7 +78,7 @@ apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
   name: managed-nfs-storage
-provisioner: storage.io/nfs # or choose another name, must match deployment's env PROVISIONER_NAME'
+provisioner: k8s-sigs.io/nfs-subdir-external-provisioner # or choose another name, must match deployment's env PROVISIONER_NAME'
 parameters:
   archiveOnDelete: "false"
 EOF
@@ -105,7 +103,7 @@ $ oc create -f deploy/test-claim.yaml -f deploy/test-pod.yaml
 # In NFS Server:
 
 $ pwd
-/nfs/openshift-nfs-storage-test-claim-pvc-26721077-7c63-41c3-8264-9a5455073822
+/var/nfsshare/openshift-nfs-storage-test-claim-pvc-26721077-7c63-41c3-8264-9a5455073822
 $ ls
 SUCCESS
 ~~~
@@ -119,4 +117,4 @@ $ oc patch storageclass managed-nfs-storage -p '{"metadata": {"annotations": {"s
 ### Troubleshooting
 
 *1. If PVC remains in Pending, need to check `nfs-client-provisioner` pod logs.
-*2. Existing issue <https://github.com/kubernetes-sigs/nfs-subdir-external-provisioner/issues/25> and this is why we need to replace <quay.io/external_storage/nfs-client-provisioner:latest> with <gcr.io/k8s-staging-sig-storage/nfs-subdir-external-provisioner:v4.0.0>.
+*2. Existing issue <https://github.com/kubernetes-sigs/nfs-subdir-external-provisioner/issues/25> and this is why we need to replace <quay.io/external_storage/nfs-client-provisioner:latest> with <gcr.io/k8s-staging-sig-storage/nfs-subdir-external-provisioner:v4.0.2>.

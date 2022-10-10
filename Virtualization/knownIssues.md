@@ -4,7 +4,7 @@
 
 ### Issue
 
-~~~bash
+~~~log
 $ oc logs importer-rhel8u6-rootdisk-k5r33 -f
 I1009 13:25:59.810028       1 importer.go:83] Starting importer
 I1009 13:25:59.810738       1 importer.go:138] begin import process
