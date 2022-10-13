@@ -12,7 +12,9 @@ import (
 )
 
 func main() {
-	kubeconfig := flag.String("kubeconfig", "/Users/cchen/Code/ocp_install/4.8.46/auth/kubeconfig", "Default kubeconfig file")
+	kube_file_default := "/Users/cchen/Code/ocp_install/4.8.46/auth/kubeconfig"
+	kubeconfig := flag.String("kubeconfig", kube_file_default, "Default kubeconfig file")
+	flag.Parse()
 	config, err := clientcmd.BuildConfigFromFlags("", *kubeconfig)
 	if err != nil {
 		fmt.Printf("failed to get config and error is %s\n", err.Error())
