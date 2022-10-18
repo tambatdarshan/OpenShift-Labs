@@ -12,11 +12,11 @@ oc adm inspect $(oc get co -o name) clusterversion/version ns/openshift-cluster-
 gathering data via script Instead, create and execute the following script:
 
 cat <<'EOF' > collect-sriov-operator-data.sh
-#!/bin/bash 
+#!/bin/bash
 
 NAMESPACE=openshift-sriov-network-operator
 
-echo "=== Overview ===" 
+echo "=== Overview ==="
 
 oc get pods -n $NAMESPACE
 oc get deployments -n $NAMESPACE

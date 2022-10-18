@@ -9,6 +9,13 @@ spec:
   - name: toolbox
     image: registry.redhat.io/rhel8/support-tools:latest
     command: ['sh', '-c', 'echo The app is running! && sleep 3600000']
+    resources:
+      requests:
+        memory: "64Mi"
+        cpu: "250m"
+      limits:
+        memory: "64Mi"
+        cpu: "250m"
 
 ---
 
