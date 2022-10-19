@@ -1,5 +1,7 @@
 # httpbin with TLS
 
+<https://github.com/maistra/maistra-test-tool/blob/maistra-2.3/testdata/examples/x86/httpbin/httpbin.yaml>
+
 ## Create Project, assign SCC, deployment and service
 
 ~~~bash
