@@ -1,6 +1,10 @@
 #!/bin/bash
 LOGFILE=/tmp/dummy.log
 
+# References
+# https://gist.github.com/dougbtv/294b9599d897be55a97396e03cba3dae
+# https://github.com/s-matyukevich/bash-cni-plugin/blob/master/01_gcp/bash-cni
+
 # Sample Log
 # Tue Nov 1 06:44:20 UTC 2022
 # CNI method: DEL
