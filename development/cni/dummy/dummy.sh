@@ -1,8 +1,8 @@
-#!/usr/bin/env bash
+#!/bin/bash
 LOGFILE=/tmp/dummy.log
 
 # Sample Log
-Tue Nov 1 06:44:20 UTC 2022
+# Tue Nov 1 06:44:20 UTC 2022
 # CNI method: DEL
 # CNI container id: ae4f2990c1a94ab58e88919d8dae55cd9f3c613f9a98eda566b76afb0d867f8a
 # CNI netns: /var/run/netns/2e3c8e50-02be-46ba-860a-ae9cc1fb8dd2
