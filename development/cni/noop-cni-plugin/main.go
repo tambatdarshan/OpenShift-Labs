@@ -12,7 +12,8 @@ import (
 )
 
 func doCommand(command string, args *skel.CmdArgs) error {
-	conf := &types.NetConf{}
+	var conf *types.NetConf = &types.NetConf{}
+	//conf := &types.NetConf{}
 	if err := json.Unmarshal(args.StdinData, conf); err != nil {
 		return fmt.Errorf("failed to unmarshal NetConf from stdin: %v %q", err, string(args.StdinData))
 	}

@@ -24,6 +24,7 @@ log () {
 
 # Outputs an essentially dummy CNI result that's borderline acceptable by the spec.
 # https://github.com/containernetworking/cni/blob/master/SPEC.md#result
+
 cniresult () {
     cat << EOF
 {
@@ -57,6 +58,7 @@ log "CNI netns: $CNI_NETNS"
 
 stdin=`cat /dev/stdin`
 log "stdin: $stdin"
+
 case $CNI_COMMAND in
 
 ADD)
