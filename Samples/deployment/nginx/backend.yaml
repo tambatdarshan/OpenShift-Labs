@@ -1,3 +1,54 @@
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backend-config
+data:
+  nginx.conf: |
+    worker_processes auto;
+    pid /run/nginx.pid;
+
+    events {
+        worker_connections 768;
+    }
+
+    http {
+
+            sendfile on;
+            tcp_nopush on;
+            tcp_nodelay on;
+            keepalive_timeout 65;
+            types_hash_max_size 2048;
+
+            include /etc/nginx/mime.types;
+            default_type application/octet-stream;
+
+            ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+            ssl_prefer_server_ciphers on;
+
+            server {
+              listen 8081;
+              root /usr/share/nginx/html;
+              location / {
+                return 200 'This is backend';
+                index index.html
+                add_header Content-Type text/plain;
+              }
+            }
+
+            log_format upstreamlog '[$time_local] $remote_addr - $remote_user - $server_name to: $upstream_addr: $request request_time $request_time' status $status upstream-status $upstream_status;
+
+            access_log /var/log/nginx/access.log upstreamlog;
+            error_log /var/log/nginx/error.log;
+
+            gzip on;
+            gzip_disable "msie6";
+    }
+
+
+---
+
 kind: Deployment
 apiVersion: apps/v1
 metadata:
@@ -33,54 +84,6 @@ spec:
       restartPolicy: Always
       securityContext: {}
       terminationGracePeriodSeconds: 30
-
----
-
-apiVersion: v1
-data:
-  nginx.conf: |
-    worker_processes auto;
-    pid /run/nginx.pid;
-
-    events {
-        worker_connections 768;
-    }
-
-    http {
-
-            sendfile on;
-            tcp_nopush on;
-            tcp_nodelay on;
-            keepalive_timeout 65;
-            types_hash_max_size 2048;
-
-            include /etc/nginx/mime.types;
-            default_type application/octet-stream;
-
-            ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
-            ssl_prefer_server_ciphers on;
-
-            server {
-              listen 8081;
-              root /usr/share/nginx/html;
-              location / {
-#                return 200 'This is backend';
-                index index.html
-                add_header Content-Type text/plain;
-              }
-            }
-
-            log_format upstreamlog '[$time_local] $remote_addr - $remote_user - $server_name to: $upstream_addr: $request request_time $request_time' status $status upstream-status $upstream_status;
-
-            access_log /var/log/nginx/access.log upstreamlog;
-            error_log /var/log/nginx/error.log;
-
-            gzip on;
-            gzip_disable "msie6";
-    }
-kind: ConfigMap
-metadata:
-  name: backend-config
 
 ---
 
