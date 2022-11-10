@@ -37,10 +37,10 @@ $ cat << EOF > net.xml
     <dnsmasq:option value='cname=*.apps.mycluster.ocp.com,lb.mycluster.ocp.com'/>
   </dnsmasq:options>
 </network>
+
 EOF
 
-$ virsh define net.xml
-$ virsh net-start ocp-dev
+$ virsh net-create net.xml
 $ virsh net-autostart ocp-dev
 ~~~
 
@@ -196,6 +196,19 @@ virt-install -n ocp-worker-$i \
 --network network=ocp-dev,mac=02:01:00:00:00:7$i  \
 --cdrom $IMAGE &
 done
+
+$ for i in 0; do
+virt-install -n ocp-infra-$i \
+--memory 8192 \
+--os-variant=fedora-coreos-stable \
+--vcpus=2  \
+--accelerate  \
+--cpu host-passthrough,cache.mode=passthrough  \
+--disk path=/home/sno/images/ocp-infra-$i.qcow2,size=120  \
+--network network=ocp-dev,mac=02:01:00:00:00:8$i  \
+--cdrom $IMAGE &
+done
+
 ~~~
 
 ## Kick off the Installation in Assited Installer Console
@@ -373,6 +386,12 @@ for i in 0 1 2; do
 virsh destroy ocp-worker-$i
 virsh undefine ocp-worker-$i
 rm -rf /home/sno/images/ocp-worker-$i.qcow2
+done
+
+for i in 0 1 2; do
+virsh destroy ocp-infra-$i
+virsh undefine ocp-infra-$i
+rm -rf /home/sno/images/ocp-infra-$i.qcow2
 done
 
 ~~~
