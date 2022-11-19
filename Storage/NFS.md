@@ -77,8 +77,9 @@ $ cat > deploy/class.yaml << EOF
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
-  name: managed-nfs-storage
+  name: nfs-client
 provisioner: k8s-sigs.io/nfs-subdir-external-provisioner # or choose another name, must match deployment's env PROVISIONER_NAME'
+volumeBindingMode: WaitForFirstConsumer
 parameters:
   archiveOnDelete: "false"
 EOF
@@ -111,7 +112,7 @@ SUCCESS
 ### Mark the NFS storage class as default
 
 ~~~ bash
-$ oc patch storageclass managed-nfs-storage -p '{"metadata": {"annotations": {"storageclass.kubernetes.io/is-default-class": "true"}}}'
+$ oc patch storageclass nfs-client -p '{"metadata": {"annotations": {"storageclass.kubernetes.io/is-default-class": "true"}}}'
 ~~~
 
 ### Troubleshooting

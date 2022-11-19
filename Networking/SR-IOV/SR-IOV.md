@@ -16,7 +16,7 @@ apiVersion: machineconfiguration.openshift.io/v1
 kind: MachineConfig
 metadata:
   labels:
-    machineconfiguration.openshift.io/role: worker
+    machineconfiguration.openshift.io/role: master # This is for SNO or 3-node
   name: mc-mmu-kernel-args
 spec:
   config:
@@ -151,19 +151,21 @@ $ cat << EOF > policy.yaml
 apiVersion: sriovnetwork.openshift.io/v1
 kind: SriovNetworkNodePolicy
 metadata:
-  name: sriov-config-netdevice-ens1f0
+  name: sriov-config-netdevice-enp130s0f0
   namespace: openshift-sriov-network-operator
 spec:
   deviceType: netdevice
-  resourceName: sriov_netdevice_ens1f0
+  isRdma: false
+  linkType: eth
+  mtu: 1500
+  nicSelector:
+    pfNames:
+    - enp130s0f0#0-7
   nodeSelector:
     feature.node.kubernetes.io/network-sriov.capable: "true"
-  priority: 50
-  mtu: 1500
   numVfs: 8
-  nicSelector:
-    pfNames: ["ens1f0#0-7"]
-  isRdma: false
+  priority: 50
+  resourceName: sriov_netdevice_enp130s0f0
 
 EOF
 
@@ -174,8 +176,8 @@ $ ls /var/lib/cni/bin/
 bandwidth  dhcp           firewall  host-device  ib-sriov  loopback  multus         portmap  route-override  sriov   tuning  vrf
 bridge     egress-router  flannel   host-local   ipvlan    macvlan   openshift-sdn  ptp      sbr             static  vlan    whereabouts
 
-# sriov-device-plugin: SR-IOV CNI plugin works with SR-IOV device plugin for VF allocation in Kubernetes. A metaplugin such as Multus 
-# gets the allocated VF's deviceID(PCI address) and is responsible for invoking the SR-IOV CNI plugin with that deviceID. 
+# sriov-device-plugin: SR-IOV CNI plugin works with SR-IOV device plugin for VF allocation in Kubernetes. A metaplugin such as Multus
+# gets the allocated VF's deviceID(PCI address) and is responsible for invoking the SR-IOV CNI plugin with that deviceID.
 
 # More details: https://github.com/openshift/sriov-cni, https://segmentfault.com/a/1190000021061494
 
@@ -213,28 +215,29 @@ I1013 07:23:56.983626       1 factory.go:108] device added: [pciAddr: 0000:3b:02
 
 $ oc new-project test-1
 
-$ cat << EOF sriov-network.yaml
+$ cat << EOF > sriov-network.yaml
 
 apiVersion: sriovnetwork.openshift.io/v1
 kind: SriovNetwork
 metadata:
-  name: example-network
+  name: sriov-intel
   namespace: openshift-sriov-network-operator
 spec:
   ipam: |
     {
       "type": "host-local",
-      "subnet": "10.56.217.0/24",
-      "rangeStart": "10.56.217.171",
-      "rangeEnd": "10.56.217.181",
+      "subnet": "10.72.51.0/27",
+      "rangeStart": "10.72.51.25",
+      "rangeEnd": "10.72.51.29",
       "routes": [{
         "dst": "0.0.0.0/0"
       }],
-      "gateway": "10.56.217.1"
+      "gateway": "10.72.51.30"
     }
-  vlan: 0
-  resourceName: sriov_netdevice_ens1f0
-  networkNamespace: test-1
+  vlan: 183
+  spoofChk: "off"
+  resourceName: sriov_netdevice_enp130s0f0
+  networkNamespace: default
 
 EOF
 
@@ -261,9 +264,14 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: sriovpod1
-  namespace: test-1
   annotations:
-    k8s.v1.cni.cncf.io/networks: example-network
+    k8s.v1.cni.cncf.io/networks: |-
+      [
+        {
+          "name": "sriov-intel",
+          "default-route": ["10.72.51.30"]
+        }
+      ]
 spec:
   containers:
   - name: appcntr1
@@ -271,6 +279,10 @@ spec:
     imagePullPolicy: IfNotPresent
     command: [ "/bin/bash", "-c", "--" ]
     args: [ "while true; do sleep 300000; done;" ]
+    securityContext:
+      capabilities:
+        add: ["NET_RAW", "NET_ADMIN"]
+      privileged: true
 
 ---
 
