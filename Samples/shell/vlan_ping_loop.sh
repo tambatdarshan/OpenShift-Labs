@@ -25,3 +25,43 @@ for i in $(seq 1 100); do
         break
     fi
 done
+
+# cat sriov-pod1.yaml
+# ---
+# apiVersion: v1
+# kind: Pod
+# metadata:
+#   name: sriovpod1
+#   annotations:
+#     k8s.v1.cni.cncf.io/networks: sriov-intel@test2
+# spec:
+#   containers:
+#   - name: appcntr1
+#     image: centos/tools
+#     imagePullPolicy: IfNotPresent
+#     command: [ "/bin/bash", "-c", "--" ]
+#     args: [ "while true; do sleep 300000; done;" ]
+#     securityContext:
+#       capabilities:
+#         add: ["NET_RAW", "NET_ADMIN"]
+#       privileged: true
+
+# ---
+
+# apiVersion: v1
+# kind: Pod
+# metadata:
+#   name: sriovpod2
+#   annotations:
+#     k8s.v1.cni.cncf.io/networks: sriov-intel@test2
+# spec:
+#   containers:
+#   - name: appcntr1
+#     image: centos/tools
+#     imagePullPolicy: IfNotPresent
+#     command: [ "/bin/bash", "-c", "--" ]
+#     args: [ "while true; do sleep 300000; done;" ]
+#     securityContext:
+#       capabilities:
+#         add: ["NET_RAW", "NET_ADMIN"]
+#       privileged: true
