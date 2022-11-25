@@ -104,4 +104,52 @@ INFO Creating infrastructure resources...
 INFO Waiting up to 20m0s (until 10:34AM) for the Kubernetes API at https://api.multi-osp.cchen.work:6443...
 INFO API v1.24.6+5157800 up
 INFO Waiting up to 30m0s (until 10:46AM) for bootstrapping to complete...
+INFO Destroying the bootstrap resources...
+INFO Waiting up to 40m0s (until 11:13AM) for the cluster at https://api.multi-osp.cchen.work:6443 to initialize...
+INFO Install complete!
+INFO To access the cluster as the system:admin user when using 'oc', run
+INFO     export KUBECONFIG=/Users/cchen/Code/ocp_install/osp/install/auth/kubeconfig
+INFO Access the OpenShift web-console here: https://console-openshift-console.apps.multi-osp.cchen.work
+INFO Login to the console with user: "kubeadmin", and password: "XXXXXX-XXXXXX-XXXXXX"
+INFO Time elapsed: 1h1m56s
+~~~
+
+## Check the Cluster
+
+~~~bash
+
+oc get co
+NAME                                       VERSION   AVAILABLE   PROGRESSING   DEGRADED   SINCE   MESSAGE
+authentication                             4.11.14   True        False         False      4m56s
+baremetal                                  4.11.14   True        False         False      24m
+cloud-controller-manager                   4.11.14   True        False         False      27m
+cloud-credential                           4.11.14   True        False         False      28m
+cluster-autoscaler                         4.11.14   True        False         False      24m
+config-operator                            4.11.14   True        False         False      25m
+console                                    4.11.14   True        False         False      9m11s
+csi-snapshot-controller                    4.11.14   True        False         False      25m
+dns                                        4.11.14   True        False         False      24m
+etcd                                       4.11.14   True        False         False      22m
+image-registry                             4.11.14   True        False         False      11m
+ingress                                    4.11.14   True        False         False      11m
+insights                                   4.11.14   True        False         False      18m
+kube-apiserver                             4.11.14   True        False         False      20m
+kube-controller-manager                    4.11.14   True        False         False      21m
+kube-scheduler                             4.11.14   True        False         False      20m
+kube-storage-version-migrator              4.11.14   True        False         False      25m
+machine-api                                4.11.14   True        False         False      21m
+machine-approver                           4.11.14   True        False         False      25m
+machine-config                             4.11.14   True        False         False      23m
+marketplace                                4.11.14   True        False         False      24m
+monitoring                                 4.11.14   True        False         False      9m59s
+network                                    4.11.14   True        False         False      24m
+node-tuning                                4.11.14   True        False         False      24m
+openshift-apiserver                        4.11.14   True        False         False      17m
+openshift-controller-manager               4.11.14   True        False         False      20m
+openshift-samples                          4.11.14   True        False         False      14m
+operator-lifecycle-manager                 4.11.14   True        False         False      25m
+operator-lifecycle-manager-catalog         4.11.14   True        False         False      25m
+operator-lifecycle-manager-packageserver   4.11.14   True        False         False      18m
+service-ca                                 4.11.14   True        False         False      25m
+storage                                    4.11.14   True        False         False      19m
 ~~~
