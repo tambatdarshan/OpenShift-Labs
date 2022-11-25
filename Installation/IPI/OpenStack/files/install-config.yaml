@@ -2,13 +2,19 @@ apiVersion: v1
 baseDomain: cchen.work
 controlPlane:
   name: master
-  platform: {}
+  platform:
+    openstack:
+      type: ocp-master-large
+      additionalSecurityGroupIDs:
+      - 604df802-aa38-4cd2-a65d-9af8484f91b5
   replicas: 3
 compute:
 - name: worker
   platform:
     openstack:
-      type: ml.large
+      type: ocp-master-large
+      additionalSecurityGroupIDs:
+      - 604df802-aa38-4cd2-a65d-9af8484f91b5
   replicas: 2
 metadata:
   name: multi-osp
@@ -17,7 +23,7 @@ networking:
   - cidr: 10.128.0.0/14
     hostPrefix: 23
   machineNetwork:
-  - cidr: 10.0.0.0/16
+  - cidr: 192.168.0.0/24
   serviceNetwork:
   - 172.30.0.0/16
   networkType: OVNKubernetes
@@ -25,9 +31,10 @@ platform:
   openstack:
     cloud: psi
     externalNetwork: provider_net_shared_3
-    computeFlavor: m1.xlarge
+    computeFlavor: ocp-master-large
     apiFloatingIP: 10.0.111.112
     ingressFloatingIP: 10.0.109.186
 fips: false
+fips: false
 pullSecret: '{"auths": ...}'
-sshKey: ssh-ed25519 AAAA...
+sshKey: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDTPFzWldumzMj3l5AndYGxTyUQxUi1cdUTHsUnwjMfcZXHc3dH9G8y1HUkfs4g3+gwLX/FmGsVWz6/61Y/+RyPJg5wI8XyP0QEYCaJ8BDiJw3rlMwrbBdIYBDwvdaMn655IM7qYgQbaXNIYKVRgaRStA2DzZqKJkdkLRW0JxA2nrRhKTLqtGzQXMYh897Aur5lt1NgafZYZbBy66LozCxe3c22avYpY7f3Of8zinJo4ZXQufHa0jQcL+6j/TpP0PYkK4R2/7UqWHP9+NREr5iKqBm3H9Ddc7ZtroKV9AaIckVyZcC8s+RlaHjI2PuSl+OBU2FnSHZbfnehSIRFhLr4O8MHy1jw3Ki/eR+V/2kDHIDHIi+1d7TTwBZMjMjXn8lffFezYze67bV+dHe+DonbZGJqXqA8+df8A3jMcl5/GQ1l5giNu6xUvQU0exH4Y2YurF7wcTy0dYJ60kM40l6QbXzNC00NShd8s5ixo8sv3rqpEpUq/JWNuZ5QNoA0eik= cchen@Chens-MacBook-Pro.local
