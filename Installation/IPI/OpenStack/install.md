@@ -153,3 +153,42 @@ operator-lifecycle-manager-packageserver   4.11.14   True        False         F
 service-ca                                 4.11.14   True        False         False      25m
 storage                                    4.11.14   True        False         False      19m
 ~~~
+
+## Tuning
+
+1. Check ETCD Performance
+
+    ~~~bash
+
+    $ oc get pods
+    NAME                                         READY   STATUS      RESTARTS   AGE
+    etcd-guard-multi-osp-dmbjv-master-0          1/1     Running     0          9h
+    etcd-guard-multi-osp-dmbjv-master-1          1/1     Running     0          9h
+    etcd-guard-multi-osp-dmbjv-master-2          1/1     Running     0          9h
+    etcd-multi-osp-dmbjv-master-0                5/5     Running     0          9h
+    etcd-multi-osp-dmbjv-master-1                5/5     Running     0          9h
+    etcd-multi-osp-dmbjv-master-2                5/5     Running     0          9h
+    installer-4-multi-osp-dmbjv-master-0         0/1     Completed   0          9h
+    installer-6-multi-osp-dmbjv-master-0         0/1     Completed   0          9h
+    installer-6-multi-osp-dmbjv-master-2         0/1     Completed   0          9h
+    installer-7-multi-osp-dmbjv-master-0         0/1     Completed   0          9h
+    installer-7-multi-osp-dmbjv-master-1         0/1     Completed   0          9h
+    installer-7-multi-osp-dmbjv-master-2         0/1     Completed   0          9h
+    installer-8-multi-osp-dmbjv-master-0         0/1     Completed   0          9h
+    installer-8-multi-osp-dmbjv-master-1         0/1     Completed   0          9h
+    installer-8-multi-osp-dmbjv-master-2         0/1     Completed   0          9h
+    revision-pruner-7-multi-osp-dmbjv-master-0   0/1     Completed   0          9h
+    revision-pruner-7-multi-osp-dmbjv-master-1   0/1     Completed   0          9h
+    revision-pruner-7-multi-osp-dmbjv-master-2   0/1     Completed   0          9h
+    revision-pruner-8-multi-osp-dmbjv-master-0   0/1     Completed   0          9h
+    revision-pruner-8-multi-osp-dmbjv-master-1   0/1     Completed   0          9h
+    revision-pruner-8-multi-osp-dmbjv-master-2   0/1     Completed   0          9h
+
+    $ for i in `oc get pods | grep etcd-multi | awk '{print $1}'`; do oc logs $i -c etcd | grep 'took too long' | wc -l; done
+    3356
+    5344
+    5250
+
+    ~~~
+
+Ceph is not suitable for etcd. Need to change device type from Ceph to tripleo(default).
