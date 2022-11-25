@@ -158,6 +158,8 @@ storage                                    4.11.14   True        False         F
 
 1. Check ETCD Performance
 
+* When Storage backend is Ceph:
+
     ~~~bash
 
     $ oc get pods
@@ -191,4 +193,36 @@ storage                                    4.11.14   True        False         F
 
     ~~~
 
-Ceph is not suitable for etcd. Need to change device type from Ceph to tripleo(default).
+* When Storage Backend type is tripleo
+
+    ~~~bash
+    oc get pods -n openshift-etcd
+    NAME                                         READY   STATUS      RESTARTS   AGE
+    etcd-guard-multi-osp-5khjg-master-0          1/1     Running     0          8h
+    etcd-guard-multi-osp-5khjg-master-1          1/1     Running     0          8h
+    etcd-guard-multi-osp-5khjg-master-2          1/1     Running     0          8h
+    etcd-multi-osp-5khjg-master-0                5/5     Running     0          8h
+    etcd-multi-osp-5khjg-master-1                5/5     Running     0          7h58m
+    etcd-multi-osp-5khjg-master-2                5/5     Running     0          8h
+    installer-5-multi-osp-5khjg-master-0         0/1     Completed   0          8h
+    installer-5-multi-osp-5khjg-master-1         0/1     Completed   0          8h
+    installer-7-multi-osp-5khjg-master-0         0/1     Completed   0          8h
+    installer-7-multi-osp-5khjg-master-1         0/1     Completed   0          8h
+    installer-7-multi-osp-5khjg-master-2         0/1     Completed   0          8h
+    installer-8-multi-osp-5khjg-master-0         0/1     Completed   0          8h
+    installer-8-multi-osp-5khjg-master-1         0/1     Completed   0          8h
+    installer-8-multi-osp-5khjg-master-2         0/1     Completed   0          8h
+    revision-pruner-7-multi-osp-5khjg-master-0   0/1     Completed   0          8h
+    revision-pruner-7-multi-osp-5khjg-master-1   0/1     Completed   0          8h
+    revision-pruner-7-multi-osp-5khjg-master-2   0/1     Completed   0          8h
+    revision-pruner-8-multi-osp-5khjg-master-0   0/1     Completed   0          8h
+    revision-pruner-8-multi-osp-5khjg-master-1   0/1     Completed   0          8h
+    revision-pruner-8-multi-osp-5khjg-master-2   0/1     Completed   0          8h
+
+    $ for i in `oc get pods | grep etcd-multi | awk '{print $1}'`; do oc logs $i -c etcd | grep 'took too long' | wc -l; done
+    2761
+    2349
+    2881
+    ~~~
+
+    Conclusion: Though Ceph is SSD based, the default local volume is better than distributed storage for ETCD.
