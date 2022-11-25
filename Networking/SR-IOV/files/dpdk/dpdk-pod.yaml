@@ -1,3 +1,9 @@
+# Inside the dpdk Pod, start the dpdk-testpmd with --vdev, a tap0 device will be created for Exception Path.
+# https://doc.dpdk.org/guides/howto/virtio_user_as_exception_path.html
+# Pay attention to the mac address and it must be the same as VF's mac!!
+# dpdk-testpmd -n 4 -l `cat /sys/fs/cgroup/cpuset/cpuset.cpus` -a $PCIDEVICE_OPENSHIFT_IO_SRIOV_DPDK_ENS4F0
+# --socket-mem 1024 --vdev=virtio_user0,path=/dev/vhost-net,mac="1a:27:87:e3:6f:84"
+
 apiVersion: v1
 kind: Pod
 metadata:
