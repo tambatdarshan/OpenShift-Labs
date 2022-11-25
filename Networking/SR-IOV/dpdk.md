@@ -43,6 +43,8 @@ $ oc get net-attach-def -n dpdk-test
 
 We specify `needVhostNet: true` in the sriovnetworknodepolicy CR, thus we could use the /dev/vhost-net driver as the backend. The virtio_user will implement a frontend to receive traffic and eventually a tap0 device will be created inside the dpdk Pod by using `--vdev=virtio_user0` option. Remember to get corresponding VF's MAC address and set it through `mac=` otherwise the traffic is not connected.
 
+![virtio-user and vhost-net](files/images/virtio-user_vhost-net.png)
+
 ~~~bash
 
 $ oc apply -f files/dpdk/dpdk-pod.yaml
