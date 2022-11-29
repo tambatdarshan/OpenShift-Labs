@@ -3,7 +3,7 @@
 ###########################################################
 users:
 - username: cchen
-  password: cchen
+  password: redhat
 
 cluster_role_bindings:
 - username: cchen

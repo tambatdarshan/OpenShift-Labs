@@ -9,15 +9,11 @@ kind: Pod
 metadata:
   name: dpdk
   annotations:
-    k8s.v1.cni.cncf.io/networks: dpdk@test2
+    k8s.v1.cni.cncf.io/networks: dpdk-network-1
 spec:
   containers:
-    - command:
-        - /bin/bash
-        - -c
-        - sleep INF
-      image: registry.redhat.io/openshift4/dpdk-base-rhel8
-      imagePullPolicy: Always
+    - image: quay.io/rhn_support_cchen/dpdk:v1.29
+      command: ["/bin/bash", "-c", "/entrypoint.sh"]
       name: dpdk
       resources:
         limits:
