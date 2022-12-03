@@ -13,11 +13,11 @@ for i in $(seq 1 200); do
     helm install test-mychart .
     echo "Sleep 100 waiting for install"
     sleep 60
-    oc get pods | grep -q -i init
-    result=$?
-    if [ $result -eq 0 ]; then
-        echo "Found INIT Pod"
-        oc get pods
-        exit 1
-    fi
+    # oc get pods | grep -q -i init
+    # result=$?
+    # if [ $result -eq 0 ]; then
+    #     echo "Found INIT Pod"
+    #     oc get pods
+    #     exit 1
+    # fi
 done
