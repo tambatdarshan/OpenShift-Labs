@@ -41,7 +41,7 @@
 
     ~~~bash
 
-    $ openshift flavor list
+    $ openstack flavor list
 
     ~~~
 
@@ -51,7 +51,7 @@
 
 $ cat files/install-config.yaml
 apiVersion: v1
-baseDomain: cchen.work
+baseDomain: cchen.work # A publicly accessible domain name in name.com
 controlPlane:
   name: master
   platform:
@@ -86,7 +86,8 @@ platform:
     computeFlavor: ocp-master-large
     apiFloatingIP: 10.0.111.112            # API Floating IP we created before
     ingressFloatingIP: 10.0.109.186        # Ingress Floating IP we created before
-
+pullSecret: '{"auths": ...}'
+sshKey: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDTPFzWldumzMj3l5AndYGxTyUQxUi1cdUTHsUnwjMfcZXHc3dH9G8y1HUkfs4g3+gwLX/FmGsVWz6/61Y/+RyPJg5wI8XyP0QEYCaJ8BDiJw3rlMwrbBdIYBDwvdaMn655IM7qYgQbaXNIYKVRgaRStA2DzZqKJkdkLRW0JxA2nrRhKTLqtGzQXMYh897Aur5lt1NgafZYZbBy66LozCxe3c22avYpY7f3Of8zinJo4ZXQufHa0jQcL+6j/TpP0PYkK4R2/7UqWHP9+NREr5iKqBm3H9Ddc7ZtroKV9AaIckVyZcC8s+RlaHjI2PuSl+OBU2FnSHZbfnehSIRFhLr4O8MHy1jw3Ki/eR+V/2kDHIDHIi+1d7TTwBZMjMjXn8lffFezYze67bV+dHe+DonbZGJqXqA8+df8A3jMcl5/GQ1l5giNu6xUvQU0exH4Y2YurF7wcTy0dYJ60kM40l6QbXzNC00NShd8s5ixo8sv3rqpEpUq/JWNuZ5QNoA0eik= cchen@Chens-MacBook-Pro.local
 ~~~
 
 ## Launch the Installation
