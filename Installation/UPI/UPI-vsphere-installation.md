@@ -215,3 +215,25 @@ do
 govc vm.destroy worker$i
 done
 ~~~
+
+## Remove CD-ROM
+
+~~~bash
+$  govc device.ls -vm=cchen-mirror-registry
+ide-200       VirtualIDEController       IDE 0
+ide-201       VirtualIDEController       IDE 1
+ps2-300       VirtualPS2Controller       PS2 controller 0
+pci-100       VirtualPCIController       PCI controller 0
+sio-400       VirtualSIOController       SIO controller 0
+keyboard-600  VirtualKeyboard            Keyboard
+pointing-700  VirtualPointingDevice      Pointing device; Device
+video-500     VirtualMachineVideoCard    Video card
+vmci-12000    VirtualMachineVMCIDevice   Device on the virtual machine PCI bus that provides support for the virtual machine communication interface
+pvscsi-1000   ParaVirtualSCSIController  VMware paravirtual SCSI
+cdrom-3000    VirtualCdrom               ISO [datastore1] ISO/rhel-8.3-x86_64-dvd.iso
+disk-1000-0   VirtualDisk                125,829,120 KB
+ethernet-1    VirtualVmxnet3             VM Network
+disk-1000-1   VirtualDisk                104,857,600 KB
+
+$ govc device.remove -vm=cchen-mirror-registry cdrom-3000
+~~~
