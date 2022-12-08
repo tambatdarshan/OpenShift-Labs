@@ -2,7 +2,12 @@
 
 ## Pre Install Configuration
 
-1. Download rc file from webconsole Project -> API Access -> Download OpenStack RC File
+1. Configure credentials
+
+   * Download rc file from webconsole Project -> API Access -> Download OpenStack RC File,
+
+   * Save it to `~/.config/openstack/`. Add `password` entry in `~/.config/openstack/clouds.yaml`.
+
 2. Create Floating IPs for API and Ingress
 
     ~~~bash
@@ -56,17 +61,23 @@ controlPlane:
   name: master
   platform:
     openstack:
-      type: ocp-master-large
+      type: m1.xlarge
       additionalSecurityGroupIDs:
-      - 604df802-aa38-4cd2-a65d-9af8484f91b5 # OCP Security Group
+      - 43b41f6d-585d-459b-ad87-2eb18bb4e930 # OCP Security Group
+#      rootVolume: # If you would like to use Cinder volume instead of ephermeral disks
+#        size: 80
+#        type: tripleo
   replicas: 3
 compute:
 - name: worker
   platform:
     openstack:
-      type: ocp-master-large
+      type: m1.xlarge
       additionalSecurityGroupIDs:
-      - 604df802-aa38-4cd2-a65d-9af8484f91b5 # OCP Security Group
+      - 43b41f6d-585d-459b-ad87-2eb18bb4e930 # OCP Security Group
+#      rootVolume:
+#        size: 80
+#        type: tripleo
   replicas: 2
 metadata:
   name: multi-osp
@@ -83,7 +94,7 @@ platform:
   openstack:
     cloud: psi
     externalNetwork: provider_net_shared_3 # Pre-configured external Network
-    computeFlavor: ocp-master-large
+    computeFlavor: m1.xlarge
     apiFloatingIP: 10.0.111.112            # API Floating IP we created before
     ingressFloatingIP: 10.0.109.186        # Ingress Floating IP we created before
 pullSecret: '{"auths": ...}'
@@ -155,7 +166,7 @@ service-ca                                 4.11.14   True        False         F
 storage                                    4.11.14   True        False         False      19m
 ~~~
 
-## Tuning
+## Performance
 
 1. Check ETCD Performance
 
