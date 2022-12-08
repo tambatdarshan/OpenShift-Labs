@@ -238,3 +238,7 @@ storage                                    4.11.14   True        False         F
     ~~~
 
     Conclusion: Though Ceph is SSD based, the default local volume is better than distributed storage for ETCD.
+
+## Reference
+
+<https://source.redhat.com/groups/public/cee_labs/labs_wiki/ocp_4x_installation_on_psi>
