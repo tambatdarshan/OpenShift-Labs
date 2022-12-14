@@ -135,5 +135,4 @@ sh-4.4# openssl x509 -in /var/lib/kubelet/pki/kubelet-client-current.pem -text -
 
 <https://jvns.ca/blog/2017/08/05/how-kubernetes-certificates-work/>
 <https://www.youtube.com/watch?v=gXz4cq3PKdg>
-
 <https://kubernetes.io/docs/reference/access-authn-authz/kubelet-authn-authz/>
