@@ -20,7 +20,7 @@ func main() {
 	// Set up a /hello resource handler
 	http.HandleFunc("/hello", helloHandler)
 
-	// Create a CA certificate pool and add cert.pem to it
+	// Create a CA certificate pool and add CA cert to it
 	caCert, err := ioutil.ReadFile("ca.crt")
 	if err != nil {
 		log.Fatal(err)
