@@ -56,3 +56,41 @@ I1009 13:26:01.477740       1 qemu.go:257] 0.00
     ~~~
 
 5. The error inside importer Pod is gone and VM is running
+
+## VMI is Not Created
+
+<https://github.com/kubevirt/containerized-data-importer/blob/main/doc/storageprofile.md>
+
+~~~bash
+
+$ oc get ev
+
+<Snip>
+4m50s       Warning   ErrClaimNotValid             datavolume/rhel8-minor-bird                DataVolume.storage spec is missing accessMode and volumeMode, cannot get access mode from StorageProfile standard-csi
+
+~~~
+
+Need to patch the StorageProfile of the StorageClass with both accessModes and volumeMode set.
+
+~~~bash
+
+$ oc get storageprofile standard-csi -o yaml
+
+<Snip>
+spec:
+  claimPropertySets:
+  - accessModes:
+    - ReadWriteOnce
+
+$ oc patch --type merge -p '{"spec": {"claimPropertySets": [{"volumeMode": "Filesystem"}]}}' StorageProfile standard-csi
+
+$ oc get storageprofile standard-csi -o yaml
+
+<Snip>
+spec:
+  claimPropertySets:
+  - accessModes:
+    - ReadWriteOnce
+    volumeMode: Filesystem
+
+~~~
