@@ -45,3 +45,7 @@ To https://github.com/cchen666/aicli.git
 ~~~
 
 ## Initiate PR in your own github repo
+
+## Sync Local Repo with Remote Repo
+
+<https://www.zhihu.com/question/28676261>
