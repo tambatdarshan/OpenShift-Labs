@@ -44,8 +44,26 @@ To https://github.com/cchen666/aicli.git
  * [new branch]      cchen-dev -> cchen-dev
 ~~~
 
-## Initiate PR in your own github repo
+## Make sure the Local git is sync with Remote git
+
+~~~bash
+
+$ git checkout main
+$ git pull upstream main # Pull = Fetch + Merge. Pull upstream to local main
+$ git checkout <feature branch>
+$ git rebase main # Put your commit aside first, sync upstream main commits, then put your commit back. Could have conflicts
+$ git push origin <feature branch> -f
+
+~~~
+
+## Initiate PR in your own github repo through github Web
 
 ## Sync Local Repo with Remote Repo
 
 <https://www.zhihu.com/question/28676261>
+
+## Ref
+
+<https://blog.csdn.net/qq_33429968/article/details/62219783>
+<https://www.bilibili.com/video/BV19e4y1q7JJ/?spm_id_from=333.999.0.0&vd_source=3b5953ad183cffe85de62bfc0e7b0322>
+<https://www.bilibili.com/video/BV1ne4y1S7S9/?spm_id_from=333.337.search-card.all.click&vd_source=3b5953ad183cffe85de62bfc0e7b0322>

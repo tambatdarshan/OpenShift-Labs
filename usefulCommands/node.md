@@ -132,3 +132,11 @@ $ nsenter -t 3063686 -n ip a
 $ nsenter -t 3063686 -m -p mount
 
 ~~~
+
+## Check Node Log
+
+~~~bash
+
+$ oc adm node-logs worker01.ocp4.example.com -u kubelet
+
+~~~

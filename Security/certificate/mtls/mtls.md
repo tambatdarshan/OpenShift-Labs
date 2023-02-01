@@ -4,6 +4,7 @@
 
 ~~~bash
 
+$ pip install trustme
 $ python cert.py
 
 ~~~
