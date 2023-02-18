@@ -16,3 +16,22 @@ spec:
     - name: local-disks
       persistentVolumeClaim:
         claimName: local-pvc-name
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  annotations:
+    volume.beta.kubernetes.io/storage-provisioner: kubernetes.io/cinder
+    volume.kubernetes.io/storage-provisioner: kubernetes.io/cinder
+  name: local-pvc-name
+  namespace: test-pvc
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: standard-csi
+  volumeMode: Filesystem
