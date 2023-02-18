@@ -30,6 +30,12 @@
 3. Create Security Group
 
     ~~~bash
+    $ openstack security group create OCP  --description "allow 6443 443 80 22"
+
+    $ openstack security group rule create --proto tcp --remote-ip 0.0.0.0/0 --dst-port 6443 OCP
+    $ openstack security group rule create --proto tcp --remote-ip 0.0.0.0/0 --dst-port 443 OCP
+    $ openstack security group rule create --proto tcp --remote-ip 0.0.0.0/0 --dst-port 80 OCP
+    $ openstack security group rule create --proto tcp --remote-ip 0.0.0.0/0 --dst-port 22 OCP
 
     $ openstack security group list -c ID -c Name -c Description
     +--------------------------------------+------------------------+--------------------------------+
