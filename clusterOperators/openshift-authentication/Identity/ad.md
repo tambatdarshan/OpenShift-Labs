@@ -36,18 +36,18 @@ spec:
     ldap:
       attributes:
         id:
-        - name
+        - sAMAccountName
         email:
         - mail
         name:
         - cn
         preferredUsername:
-        - givenName
-      bindDN: "CN=BindUser,OU=openshift,OU=cloud, DC=titamu, DC=com"
+        - sAMAccountName
+      bindDN: "CN=BindUser,CN=Users, DC=titamu, DC=com"
       bindPassword:
         name: ldap-secret
       insecure: true
-      url: "ldap://10.0.95.91/ou=openshift,ou=cloud,dc=titamu,dc=com?userPrincipalName"
+      url: "ldap://10.0.169.81/ou=openshift,ou=support,dc=titamu,dc=com?sAMAccountName"
 ~~~
 
 ## Group Sync
@@ -56,13 +56,13 @@ spec:
 $ cat << EOF > active_directory_config.yaml
 kind: LDAPSyncConfig
 apiVersion: v1
-url: ldap://10.0.95.91:389
-bindDN: cn=BindUser,ou=openshift,ou=cloud, dc=titamu, dc=com
-bindPassword: 'RedHat1!'
+url: ldap://10.0.169.81:389
+bindDN: cn=BindUser,CN=Users, dc=titamu, dc=com
+bindPassword: '<Password>'
 insecure: true
 activeDirectory:
     usersQuery:
-        baseDN: "ou=openshift,ou=cloud,dc=titamu,dc=com"
+        baseDN: "ou=openshift,ou=support,dc=titamu,dc=com"
         scope: sub
         derefAliases: never
         filter: (objectClass=person)
@@ -106,7 +106,7 @@ activeDirectory:
     userNameAttributes: [ sAMAccountName ]
     groupMembershipAttributes: [ memberOf ]
 groupUIDNameMapping:
-    "CN=support,OU=openshift,OU=cloud,DC=titamu,DC=com": ocp_support
+    "CN=gcg-shift,OU=openshift,OU=support,DC=titamu,DC=com": ocp_support
 
 $ oc adm groups sync --sync-config=active_directory_config.yaml --confirm
 
