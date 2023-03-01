@@ -27,3 +27,13 @@ $ virt-install -n sno412 \
 --cdrom /home/sno/coreos-x86_64.iso
 
 ~~~
+
+## Watch the Installation Process
+
+~~~bash
+
+$   journalctl --field _SYSTEMD_UNIT
+$ journalctl -u assisted-service -f
+$ journalctl -u start-cluster-installation
+
+~~~
