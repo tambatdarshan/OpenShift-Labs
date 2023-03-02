@@ -48,3 +48,11 @@ Password:
     $ argocd cluster add default/api-sno-pek-cchen-work:6443/kube:admin
 
     ~~~
+
+## Create ApplicationSet
+
+~~~bash
+
+$ oc apply files/applicationSet.yaml
+
+~~~
