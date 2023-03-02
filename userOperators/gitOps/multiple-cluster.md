@@ -14,6 +14,8 @@ $ oc get secret -n openshift-gitops openshift-gitops-cluster -o yaml
 
 ~~~bash
 
+$ brew install argocd
+
 $ argocd login openshift-gitops-server-openshift-gitops.apps.gcg-shift.cchen.work
 Username: admin
 Password:
