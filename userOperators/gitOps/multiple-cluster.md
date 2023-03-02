@@ -1,5 +1,7 @@
 # ArgoCD to Manage Multiple Cluster
 
+<https://www.youtube.com/watch?v=Lx2hd_lbhxY>
+
 ## Get the Admin Password from Secret
 
 ~~~bash
